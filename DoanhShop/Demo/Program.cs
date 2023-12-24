@@ -1,7 +1,24 @@
-var builder = WebApplication.CreateBuilder(args);
+using Application.Students;
+using Demo.DependencyInjections;
+using Domain.Abstractions;
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<IServiceA, ServiceA>();
+// builder.Services.AddScoped<IServiceA, ServiceA>();
+// builder.Services.AddTransient<IServiceA, ServiceA>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+var assembly = typeof(ApplicationDbContext).Assembly.GetName().Name;
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(assembly)));
+//builder.Configuration["ConnectionStrings:DefaultConnection"] 
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+builder.Services.AddScoped<IRepository, EfRepository>();
 
 var app = builder.Build();
 
