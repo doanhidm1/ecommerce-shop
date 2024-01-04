@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
@@ -10,14 +11,24 @@ namespace Persistence
         {
             _context = context;
         }
-        public List<Student> FindAll()
+        public async Task<List<Student>> FindAll()
         {
-            return _context.Students.ToList();
+            return await _context.Students.ToListAsync();
         }
 
         public void Add(Student student)
         {
             _context.Students.Add(student);
+        }
+
+        public void Update(Student student)
+        {
+            _context.Students.Update(student);
+        }
+
+        public async Task<Student> FindById(Guid id)
+        {
+            return await _context.Students.FirstAsync(s => s.Id == id);
         }
     }
 }

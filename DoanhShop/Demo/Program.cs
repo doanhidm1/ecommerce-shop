@@ -16,7 +16,7 @@ var assembly = typeof(ApplicationDbContext).Assembly.GetName().Name;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(assembly)));
 //builder.Configuration["ConnectionStrings:DefaultConnection"] 
-builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService1>();
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped<IRepository, EfRepository>();
 

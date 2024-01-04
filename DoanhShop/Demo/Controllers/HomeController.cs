@@ -15,10 +15,35 @@ namespace Demo.Controllers
             _studentService = studentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var students = _studentService.GetStudents();
+            var students = await _studentService.GetStudentsAsync();
             return View(students);
+        }
+
+        public IActionResult CreateStudent()
+        {
+            return View();
+        }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Save(CreateStudentRequest request)
+        {
+            try
+            {
+                await _studentService.AddStudent(request);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[Home/Save]", ex);
+                return RedirectToAction("Error");
+            }
+        }
+
+        public async Task<IActionResult> UpdateStudent(Guid id)
+        {
+            return Ok(10);
         }
 
         public IActionResult Privacy()

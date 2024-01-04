@@ -4,8 +4,10 @@ namespace Domain.Abstractions
 {
     public interface IRepository
     {
-        List<Student> FindAll();
+        Task<List<Student>> FindAll();
 
         void Add(Student student);
+        void Update(Student student);
+        Task<Student> FindById(Guid id);
     }
 }
