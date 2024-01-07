@@ -28,7 +28,12 @@ namespace Persistence
 
         public async Task<Student> FindById(Guid id)
         {
-            return await _context.Students.FirstAsync(s => s.Id == id);
+            return await _context.Students.FirstAsync(s => s.Id == id) ?? throw new Exception("student not found");
+        }
+
+        public void Delete(Student student)
+        {
+            _context.Students.Remove(student);
         }
     }
 }

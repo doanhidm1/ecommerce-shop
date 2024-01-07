@@ -9,6 +9,7 @@ namespace Application.Students
         Task AddStudent(CreateStudentRequest request);
         Task UpdateStudent(UpdateStudentRequest request);
         Task<StudentViewModel> GetStudentsByIdAsync(Guid id);
+        Task DeleteStudent(Guid id);
     }
     //public class StudentService : IStudentService
     //{
@@ -95,10 +96,17 @@ namespace Application.Students
 
         public async Task UpdateStudent(UpdateStudentRequest request)
         {
-            var student = await _repository.FindById(request.Id) ?? throw new Exception("student not found");
+            var student = await _repository.FindById(request.Id);
             student.Name = request.Name;
             student.Age = request.Age;
             _repository.Update(student);
+            await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task DeleteStudent(Guid id)
+        {
+            var student = await _repository.FindById(id);
+            _repository.Delete(student);
             await _unitOfWork.SaveChangeAsync();
         }
     }
