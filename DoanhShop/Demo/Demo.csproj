@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="DependencyInjections\**" />
+    <Compile Remove="Views\DI\**" />
     <Content Remove="DependencyInjections\**" />
+    <Content Remove="Views\DI\**" />
     <EmbeddedResource Remove="DependencyInjections\**" />
+    <EmbeddedResource Remove="Views\DI\**" />
     <None Remove="DependencyInjections\**" />
+    <None Remove="Views\DI\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.25">
@@ -35,6 +40,18 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\assets\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\assets\fonts\slick.svg" />
+    <None Include="wwwroot\assets\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\js\jquery.min.js" />
+    <None Include="wwwroot\assets\js\jquery.zoom.min.js" />
+    <None Include="wwwroot\assets\js\main.js" />
+    <None Include="wwwroot\assets\js\nouislider.min.js" />
+    <None Include="wwwroot\assets\js\slick.min.js" />
   </ItemGroup>
 
 </Project>
