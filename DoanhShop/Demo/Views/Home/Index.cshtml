@@ -1,13 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model List<Application.Students.StudentViewModel>
-<div class="text-center">
-    @foreach(var student in Model)
-    {
-        <div>
-            @student.Id @student.Name @student.Age
-            <a href="/Home/UpdateStudent?id=@student.Id">Update</a>
-        </div>
-    }
+@section Scripts
+{
+    @* <script src="~/js/demo.js"></script> *@
+    <script src="~/js/twb-pgination.js"></script>
+    <script src="~/js/student.js"></script>
+
+}
+<div id="table-content"></div>
+<div id="pagination"></div>
+<div>
+    <a class="btn btn-success" href="/Home/CreateStudent">Create</a>
 </div>

@@ -5,9 +5,9 @@
 
 <h1>CreateStudent</h1>
 
-<form method="post" action="/Home/Save">
+<form method="post" action="/Home/CreateStudent">
     @Html.AntiForgeryToken()
     <input name="Name" placeholder="student name" type="text" />
     <input name="Age" placeholder="student age" type="number" />
-    <button>Save</button>
+    <button class="btn-primary">Add</button>
 </form>

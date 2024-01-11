@@ -15,19 +15,25 @@ namespace Demo.Controllers
             _studentService = studentService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var students = await _studentService.GetStudentsAsync();
-            return View(students);
+            return View();
+        }
+
+        public async Task<IActionResult> StudentPartial([FromBody] Page model)
+        {
+            var students = await _studentService.GetStudentsAsync(model);
+            return PartialView(students);
         }
 
         public IActionResult CreateStudent()
         {
             return View();
         }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Save(CreateStudentRequest request)
+        public async Task<IActionResult> CreateStudent(CreateStudentRequest request)
         {
             try
             {
@@ -36,14 +42,56 @@ namespace Demo.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("[Home/Save]", ex);
+                _logger.LogError("[Home/AddStudent]", ex);
                 return RedirectToAction("Error");
             }
         }
 
         public async Task<IActionResult> UpdateStudent(Guid id)
         {
-            return Ok(10);
+            var student = await _studentService.GetStudentsByIdAsync(id);
+            return View(student);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> UpdateStudent(UpdateStudentRequest request)
+        {
+            try
+            {
+                await _studentService.UpdateStudent(request);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[Home/DeleteStudent]", ex);
+                return RedirectToAction("Error");
+            }
+
+        }
+
+        public async Task<IActionResult> DeleteStudent(Guid id)
+        {
+            var student = await _studentService.GetStudentsByIdAsync(id);
+            return View(student);
+        }
+
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> RemoveStudent(Guid id)
+        {
+            try
+            {
+                await _studentService.DeleteStudent(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[Home/RemoveStudent]", ex);
+                return RedirectToAction("Error");
+            }
+
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,16 @@
+﻿@using Application.Students;
+
+@{
+    ViewData["Title"] = "DeleteStudent";
+}
+@model StudentViewModel
+<h1>DeleteStudent</h1>
+
+<div><b>Name: </b>@Model.Name</div>
+<div><b>Age: </b>@Model.Age</div>
+<form method="post" action="/Home/RemoveStudent">
+    @Html.AntiForgeryToken()
+    <input hidden name="Id" value="@Model.Id" type="text" />
+    <button class="btn btn-danger">Delete</button>
+</form>
+

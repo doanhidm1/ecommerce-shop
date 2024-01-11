@@ -1,0 +1,12 @@
+﻿@model Application.Students.StudentData
+
+<div class="text-center">
+    @foreach (var student in Model.Students)
+    {
+        <div class="total-count" data-count="@Model.TotalStudent">
+            @student.Id @student.Name @student.Age
+            @Html.ActionLink("Edit", "UpdateStudent", new { id = student.Id }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Delete", "DeleteStudent", new { id = student.Id }, new { @class = "btn btn-danger" })
+        </div>
+    }
+</div>

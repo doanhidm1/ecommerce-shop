@@ -1,12 +1,11 @@
 using Application.Students;
-using Demo.DependencyInjections;
 using Domain.Abstractions;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton<IServiceA, ServiceA>();
+//builder.Services.AddSingleton<IServiceA, ServiceA>();
 // builder.Services.AddScoped<IServiceA, ServiceA>();
 // builder.Services.AddTransient<IServiceA, ServiceA>();
 // Add services to the container.
@@ -18,7 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //builder.Configuration["ConnectionStrings:DefaultConnection"] 
 builder.Services.AddScoped<IStudentService, StudentService1>();
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-builder.Services.AddScoped<IRepository, EfRepository>();
+//builder.Services.AddScoped<IRepository, EfRepository>();
+builder.Services.AddScoped(typeof(IRepository1<,>), typeof(EfRepository1<,>));
 
 var app = builder.Build();
 
