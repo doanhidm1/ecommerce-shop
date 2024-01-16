@@ -22,7 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Home\CreateStudent.cshtml" />
+    <Content Remove="Views\Home\DeleteStudent.cshtml" />
     <Content Remove="Views\Home\Hello.cshtml" />
+    <Content Remove="Views\Home\Index.cshtml" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
+    <Content Remove="Views\Home\StudentPartial.cshtml" />
+    <Content Remove="Views\Home\UpdateStudent.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +58,10 @@
     <None Include="wwwroot\assets\js\main.js" />
     <None Include="wwwroot\assets\js\nouislider.min.js" />
     <None Include="wwwroot\assets\js\slick.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Home\" />
   </ItemGroup>
 
 </Project>
