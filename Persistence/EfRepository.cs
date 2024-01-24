@@ -3,9 +3,16 @@ using Domain.Entities;
 
 namespace Persistence
 {
-    public class EfRepository<TEntity, TKey>(ShopDBContext context) : IRepository<TEntity, TKey> where TEntity : class
+    #nullable enable
+
+    public class EfRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
-        private readonly ShopDBContext _context = context;
+        private readonly ShopDBContext _context;
+
+        public EfRepository(ShopDBContext context)
+        {
+            _context = context;
+        }
 
         public void Add(TEntity entity)
         {

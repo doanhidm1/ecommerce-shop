@@ -1,78 +1,109 @@
 ﻿using Domain.Abstractions;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Products
 {
     public interface IProductService
     {
-        Task<ProductData> GetProductsAsync(Page model);
-        Task AddProduct(CreateProductRequest request);
-        Task UpdateProduct(UpdateProductRequest request);
-        Task<ProductViewModel> GetProductsByIdAsync(Guid id);
-        Task DeleteProduct(Guid id);
+        GenericData<ProductViewModel> GetProducts(ProductPage model);
     }
 
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product, Guid> _repository;
+        private readonly IRepository<Product, Guid> _productRepository;
+        private readonly IRepository<Category, Guid> _categoryRepository;
+        private readonly IRepository<Review, Guid> _reviewRepository;
+        private readonly IRepository<ProductImage, Guid> _imageRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public ProductService(IRepository<Product, Guid> productRepository, IUnitOfWork unitOfWork)
+
+        public ProductService(
+            IRepository<Product, Guid> productRepository,
+            // IRepository<Category, Guid> categoryRepository,
+            // IRepository<Review, Guid> reviewRepository,
+            IRepository<ProductImage, Guid> imageRepository,
+            IUnitOfWork unitOfWork)
         {
-            _repository = productRepository;
+            _productRepository = productRepository;
+            // _categoryRepository = categoryRepository;
+            // _reviewRepository = reviewRepository;
+            _imageRepository = imageRepository;
             _unitOfWork = unitOfWork;
-
         }
-
-        public async Task AddProduct(CreateProductRequest request)
+        public GenericData<ProductViewModel> GetProducts(ProductPage filter)
         {
-            var Product = new Product
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-            };
-            _repository.Add(Product);
-            await _unitOfWork.SaveChangesAsync();
-        }
+            var data = new GenericData<ProductViewModel>();
+            var products = _productRepository.GetAll();
 
-        public async Task<ProductViewModel> GetProductsByIdAsync(Guid id)
-        {
-            var Product = await _repository.FindById(id) ?? throw new Exception("Product not found");
-            return new ProductViewModel
+            var result = products.Select(p => new ProductViewModel
             {
-                Id = Product.Id,
-                Name = Product.Name,
-            };
-        }
+                ProductId = p.Id,
+                ProductName = p.Name,
+                CategoryId = p.CategoryId,
+                Price = p.Price,
+                DiscountPrice = p.DiscountPrice,
+            });
 
-        public async Task<ProductData> GetProductsAsync(Page model)
-        {
-            var data = new ProductData();
-            var Products = _repository.GetAll();
-            data.TotalProduct = Products.Count();
-            Products = Products.OrderBy(s => s.Name).Skip(model.SkipNumber).Take(model.PageSize);
-            var result = await Products.Select(s => new ProductViewModel
+            if (!string.IsNullOrEmpty(filter.CategoryId) && Guid.TryParse(filter.CategoryId, out Guid categoryId))
             {
-                Id = s.Id,
-                Name = s.Name,
-            }).ToListAsync();
-            data.Products = result;
+                result = result.Where(s => s.CategoryId == categoryId);
+            }
+
+            if (filter.FromPrice.HasValue && filter.ToPrice.HasValue)
+            {
+                result = result.Where(s => s.Price >= filter.FromPrice.Value && s.Price <= filter.ToPrice);
+            }
+
+            if (filter.ToPrice.HasValue && !filter.FromPrice.HasValue)
+            {
+                result = result.Where(s => s.Price <= filter.ToPrice.Value);
+            }
+            if (filter.FromPrice.HasValue && !filter.ToPrice.HasValue)
+            {
+                result = result.Where(s => s.Price >= filter.FromPrice.Value);
+            }
+
+            if (!string.IsNullOrEmpty(filter.KeyWord))
+            {
+                result = result.Where(s => s.ProductName.Contains(filter.KeyWord, StringComparison.OrdinalIgnoreCase));
+            }
+            switch (filter.SortBy)
+            {
+                case SortEnum.Price:
+                    result = result.OrderBy(s => s.Price);
+                    break;
+                case SortEnum.Name:
+                    result = result.OrderBy(s => s.ProductName);
+                    break;
+                default:
+                    break;
+            }
+
+            // lấy ra số lượng product để tính số trang
+            data.Count = result.Count();
+
+            // lấy ra danh sách product ứng với PageIndex truyền vào (lúc đầu là 1)
+            var productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
+
+            // lấy ra imageurl và rating
+            var productIds = productViewModels.Select(p => p.ProductId).ToList();
+
+            var images = _imageRepository.GetAll().Where(i => productIds.Contains(i.ProductId));
+            var reviews = _reviewRepository.GetAll().Where(r => productIds.Contains(r.ProductId));
+
+            foreach (var item in productViewModels)
+            {
+                var image = images.FirstOrDefault(s => s.ProductId == item.ProductId)?.ImageLink;
+                item.ImageUrl = string.IsNullOrEmpty(image) ? string.Empty : image;
+
+                var productReviews = reviews.Where(s => s.ProductId == item.ProductId);
+                if (productReviews != null && productReviews.Any())
+                {
+                    item.Rating = productReviews.Max(s => s.Rating);
+                }
+            }
+            
+            data.Data = productViewModels;
             return data;
-        }
-
-        public async Task UpdateProduct(UpdateProductRequest request)
-        {
-            var Product = await _repository.FindById(request.Id) ?? throw new Exception("Product not found");
-            Product.Name = request.Name;
-            _repository.Update(Product);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task DeleteProduct(Guid id)
-        {
-            var Product = await _repository.FindById(id) ?? throw new Exception("Product not found");
-            _repository.Delete(Product);
-            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
