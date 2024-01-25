@@ -2,12 +2,14 @@
 using Application.Products;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application;
-public static class DI
+namespace Application
 {
-    public static void AddService(this IServiceCollection services)
+    public static class DI
     {
-        services.AddScoped<ICategoryService, CategoryService>();
-        services.AddScoped<IProductService, ProductService>();
+        public static void AddService(this IServiceCollection services)
+        {
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+        }
     }
 }

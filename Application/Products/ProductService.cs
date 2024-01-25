@@ -11,21 +11,18 @@ namespace Application.Products
     public class ProductService : IProductService
     {
         private readonly IRepository<Product, Guid> _productRepository;
-        private readonly IRepository<Category, Guid> _categoryRepository;
         private readonly IRepository<Review, Guid> _reviewRepository;
         private readonly IRepository<ProductImage, Guid> _imageRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public ProductService(
             IRepository<Product, Guid> productRepository,
-            // IRepository<Category, Guid> categoryRepository,
-            // IRepository<Review, Guid> reviewRepository,
+            IRepository<Review, Guid> reviewRepository,
             IRepository<ProductImage, Guid> imageRepository,
             IUnitOfWork unitOfWork)
         {
             _productRepository = productRepository;
-            // _categoryRepository = categoryRepository;
-            // _reviewRepository = reviewRepository;
+            _reviewRepository = reviewRepository;
             _imageRepository = imageRepository;
             _unitOfWork = unitOfWork;
         }

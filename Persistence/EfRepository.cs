@@ -3,8 +3,6 @@ using Domain.Entities;
 
 namespace Persistence
 {
-    #nullable enable
-
     public class EfRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
         private readonly ShopDBContext _context;
