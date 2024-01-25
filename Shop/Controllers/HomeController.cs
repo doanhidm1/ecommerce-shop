@@ -23,6 +23,12 @@ namespace Shop.Controllers
             return View();
         }
 
+        [Route("/ErrorCode/404")]
+        public IActionResult PageNotFound()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
