@@ -18,11 +18,6 @@ namespace Shop.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [Route("/ErrorCode/404")]
         public IActionResult PageNotFound()
         {
