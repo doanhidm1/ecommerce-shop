@@ -7,7 +7,6 @@ namespace Domain.Entities
 	{
 		[Column(TypeName = "nvarchar(100)")]
 		public string Name { get; set; } = string.Empty;
-
 		[Column(TypeName = "ntext")]
 		public string Image { get; set; } = string.Empty;
 

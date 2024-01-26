@@ -13,18 +13,19 @@ namespace Application.Products
         private readonly IRepository<Product, Guid> _productRepository;
         private readonly IRepository<Review, Guid> _reviewRepository;
         private readonly IRepository<ProductImage, Guid> _imageRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        // private readonly IUnitOfWork _unitOfWork;
 
         public ProductService(
             IRepository<Product, Guid> productRepository,
             IRepository<Review, Guid> reviewRepository,
-            IRepository<ProductImage, Guid> imageRepository,
-            IUnitOfWork unitOfWork)
+            IRepository<ProductImage, Guid> imageRepository
+            // IUnitOfWork unitOfWork
+        )
         {
             _productRepository = productRepository;
             _reviewRepository = reviewRepository;
             _imageRepository = imageRepository;
-            _unitOfWork = unitOfWork;
+            // _unitOfWork = unitOfWork;
         }
         public GenericData<ProductViewModel> GetProducts(ProductPage filter)
         {
@@ -35,6 +36,7 @@ namespace Application.Products
             {
                 ProductId = p.Id,
                 ProductName = p.Name,
+                CreatedDate = p.CreatedDate,
                 CategoryId = p.CategoryId,
                 Price = p.Price,
                 DiscountPrice = p.DiscountPrice,
@@ -71,34 +73,34 @@ namespace Application.Products
                 case SortEnum.Name:
                     result = result.OrderBy(s => s.ProductName);
                     break;
+                case SortEnum.Date:
+                    result = result.OrderByDescending(s => s.CreatedDate);
+                    break;
                 default:
                     break;
             }
-
-            // lấy ra số lượng product để tính số trang
             data.Count = result.Count();
-
-            // lấy ra danh sách product ứng với PageIndex truyền vào (lúc đầu là 1)
             var productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
 
-            // lấy ra imageurl và rating
             var productIds = productViewModels.Select(p => p.ProductId).ToList();
-
             var images = _imageRepository.GetAll().Where(i => productIds.Contains(i.ProductId));
             var reviews = _reviewRepository.GetAll().Where(r => productIds.Contains(r.ProductId));
-
-            foreach (var item in productViewModels)
+            foreach (var product in productViewModels)
             {
-                var image = images.FirstOrDefault(s => s.ProductId == item.ProductId)?.ImageLink;
-                item.ImageUrl = string.IsNullOrEmpty(image) ? string.Empty : image;
-
-                var productReviews = reviews.Where(s => s.ProductId == item.ProductId);
-                if (productReviews != null && productReviews.Any())
+                var image = images.FirstOrDefault(s => s.ProductId == product.ProductId);
+                if(image != null)
                 {
-                    item.Rating = productReviews.Max(s => s.Rating);
+                    product.ImageUrl = image.ImageLink;
+                    product.ImageAlt = image.Alt;
+                }
+                var productReviews = reviews.Where(s => s.ProductId == product.ProductId);
+                product.ReviewCount = productReviews.Count();
+                if (product.ReviewCount > 0)
+                {
+                    product.Rating = productReviews.Average(s => s.Rating);
                 }
             }
-            
+
             data.Data = productViewModels;
             return data;
         }
