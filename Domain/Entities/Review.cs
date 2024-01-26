@@ -8,13 +8,13 @@ namespace Domain.Entities
 	{
 
 		[Column(TypeName = "nvarchar(100)")]
-		public string ReviewerName { get; set; }
+		public string ReviewerName { get; set; } = string.Empty;
 
 		[Column(TypeName = "nvarchar(100)")]
-		public string? Email { get; set; }
+		public string Email { get; set; } = string.Empty;
 
 		[Column(TypeName = "ntext")]
-		public string Content { get; set; }
+		public string Content { get; set; } = string.Empty;
 		public int Rating { get; set; }
 
 		[ForeignKey("Review-Product")]

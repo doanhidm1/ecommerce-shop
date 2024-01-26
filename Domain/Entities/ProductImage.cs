@@ -6,10 +6,10 @@ namespace Domain.Entities
 	public class ProductImage : BaseEntity
 	{
 		[Column(TypeName = "ntext")]
-		public string ImageLink { get; set; }
+		public string ImageLink { get; set; } = string.Empty;
 
-		[Column(TypeName = "ntext")]
-		public string? Alt { get; set; }
+		[Column(TypeName = "nvarchar(100)")]
+		public string Alt { get; set; } = string.Empty;
 
 		[ForeignKey("Image-Product")]
 		public Guid ProductId { get; set; }

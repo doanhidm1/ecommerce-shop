@@ -6,11 +6,11 @@ namespace Domain.Entities
 	public class Category : BaseEntity
 	{
 		[Column(TypeName = "nvarchar(100)")]
-		public string Name { get; set; }
+		public string Name { get; set; } = string.Empty;
 
-		[Column(TypeName = "nvarchar(100)")]
-		public string? Image { get; set; }
+		[Column(TypeName = "ntext")]
+		public string Image { get; set; } = string.Empty;
 
-		public ICollection<Product>? Products { get; set; }
+		public ICollection<Product>? Products { get; set; } 
 	}
 }
