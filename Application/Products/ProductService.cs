@@ -87,13 +87,17 @@ namespace Application.Products
             var reviews = _reviewRepository.GetAll().Where(r => productIds.Contains(r.ProductId));
             foreach (var product in productViewModels)
             {
-                var image = images.FirstOrDefault(s => s.ProductId == product.ProductId)?.ImageLink;
-                product.ImageUrl = string.IsNullOrEmpty(image) ? string.Empty : image;
+                var image = images.FirstOrDefault(s => s.ProductId == product.ProductId);
+                if(image != null)
+                {
+                    product.ImageUrl = image.ImageLink;
+                    product.ImageAlt = image.Alt;
+                }
                 var productReviews = reviews.Where(s => s.ProductId == product.ProductId);
                 product.ReviewCount = productReviews.Count();
                 if (product.ReviewCount > 0)
                 {
-                    product.Rating = (int)Math.Floor(productReviews.Average(s => s.Rating));
+                    product.Rating = productReviews.Average(s => s.Rating);
                 }
             }
 

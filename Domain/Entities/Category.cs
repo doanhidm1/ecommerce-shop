@@ -8,7 +8,7 @@ namespace Domain.Entities
 		[Column(TypeName = "nvarchar(100)")]
 		public string Name { get; set; }
 
-		[Column(TypeName = "nvarchar(100)")]
+		[Column(TypeName = "ntext")]
 		public string? Image { get; set; }
 
 		public ICollection<Product>? Products { get; set; }
