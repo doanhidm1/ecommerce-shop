@@ -1,4 +1,5 @@
-﻿using Application.Categories;
+﻿using Application.Brands;
+using Application.Categories;
 using Application.Products;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ namespace Application
         {
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IBrandService, BrandService>();
         }
     }
 }

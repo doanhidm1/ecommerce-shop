@@ -10,13 +10,17 @@ namespace Domain.Entities
 
 		[Column(TypeName = "decimal(18,2)")]
 		public decimal Price { get; set; }
-		public int Quantity { get; set; } = 0;
+		public int Quantity { get; set; }
 
-		[Column(TypeName = "ntext")]
+		[Column(TypeName = "nvarchar(max)")]
 		public string Detail { get; set; } = string.Empty;
 
-		[Column(TypeName = "ntext")]
+		[Column(TypeName = "nvarchar(max)")]
 		public string Description { get; set; } = string.Empty;
+
+		[ForeignKey("Product-Brand")]
+		public Guid BrandId { get; set; }
+		public Brand Brand { get; set; }
 
 		[ForeignKey("Product-Category")]
 		public Guid CategoryId { get; set; }

@@ -7,9 +7,8 @@ namespace Domain.Entities
 	{
 		[Column(TypeName = "nvarchar(100)")]
 		public string Name { get; set; } = string.Empty;
-		[Column(TypeName = "ntext")]
+		[Column(TypeName = "nvarchar(max)")]
 		public string Image { get; set; } = string.Empty;
-
 		public ICollection<Product>? Products { get; set; } 
 	}
 }

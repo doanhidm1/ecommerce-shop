@@ -1,7 +1,12 @@
 var homeconfig = {
-    pageSize: 6, // số lượng bản ghi mỗi page
+    pageSize: 8, // số lượng bản ghi mỗi page
     pageIndex: 1 // trang đầu tiên
 }
+
+var categoryId = '';
+var fromPrice = null;
+var toPrice = null;
+var rating = null;
 
 var dataTable =
 {
@@ -14,10 +19,17 @@ var dataTable =
 
         //optional cho phép vừa phân trang vừa lọc điều kiện
         // model.CategoryId = $(".input-radio input[type='radio']:checked").val()
+        model.FromPrice = fromPrice;
+        model.ToPrice = toPrice;
+        model.CategoryId = categoryId;
+        model.Rating = rating;
         // model.KeyWord = $('#keyword').val()
-        // model.SortBy = Number($('#product-order-by').val());
-        // model.FromPrice = Number($('#price-min').val());
-        // model.ToPrice = Number($('#price-max').val());
+        model.SortBy = Number($('#product-order-by').val());
+        model.SelectedBrandIds = [];
+        $('.brand-filter:checked').each(function () {
+            model.SelectedBrandIds.push(this.id)
+        });
+        
         //end
 
         $.ajax({
@@ -29,7 +41,7 @@ var dataTable =
 
                 $("#table-content").html(data);
 
-                total = $('.total-count:first').data('count')
+                total = $('.total-count:first').data('count') === undefined ? 0 : $('.total-count:first').data('count');
                 $('#count').text(total + " products found")
                 dataTable.paging(total, function () {
 
@@ -57,7 +69,7 @@ var dataTable =
             next: ">", //thay đổi ký tự theo ý muốn
             last: ">>", //thay đổi ký tự theo ý muốn
             prev: "<", //thay đổi ký tự theo ý muốn
-            visiblePages: 3, //số page muốn hiển thị
+            visiblePages: 10, //số page muốn hiển thị
             onPageClick: function (event, page) {
 
                 homeconfig.pageIndex = page;
@@ -81,9 +93,39 @@ function changePage() {
 
 // biding event
 
-// $('body').on('change', ".checkbox-filter input[type='radio']", filterproduct);
+$('body').on('click', 'input.price-filter', function () {
+    // get price from input (this)
+    fromPrice = Number($(this).attr('price-min'));
+    toPrice = Number($(this).attr('price-max'));
+    filterproduct();
+});
+
+$('body').on('change', 'input.rating-filter', function () {
+    // Lấy giá trị rating từ thuộc tính rating của checkbox
+    rating = $(this).prop('checked') ? Number($(this).attr('rating')) : null;
+
+    // Nếu checkbox được chọn, bỏ chọn tất cả các checkbox khác
+    if ($(this).prop('checked')) {
+        $('input.rating-filter').not(this).prop('checked', false);
+    }
+
+    // Gọi hàm filterproduct() và truyền giá trị rating vào
+    filterproduct();
+});
+
 // $('body').on('change', '#price-min', filterproduct);
 // $('body').on('change', '#price-max', filterproduct);
 $('body').on('change', '#product-order-by', filterproduct);
 $('body').on('change', '#product-page-size', changePage);
-
+$('body').on('change', '.brand-filter', filterproduct);
+$('body').on('click', 'a.category-id', function () {
+    if ($(this).hasClass('selected-category')) {
+        categoryId = '';
+        $(this).removeClass('selected-category');
+    } else {
+        categoryId = this.id;
+        $('.selected-category').removeClass('selected-category');
+        $(this).addClass('selected-category');
+    }
+    filterproduct();
+});

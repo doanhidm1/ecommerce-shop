@@ -4,6 +4,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ShopDBContext))]
-    partial class ShopDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240126064813_Change_ntext_to_nvarchar-max")]
+    partial class Changentexttonvarcharmax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +24,6 @@ namespace Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Entities.Brand", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Brand");
-                });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
@@ -72,9 +54,6 @@ namespace Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BrandId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
@@ -108,8 +87,6 @@ namespace Domain.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
 
@@ -185,19 +162,11 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
-                    b.HasOne("Domain.Entities.Brand", "Brand")
-                        .WithMany("Products")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Brand");
 
                     b.Navigation("Category");
                 });
@@ -222,11 +191,6 @@ namespace Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Brand", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>

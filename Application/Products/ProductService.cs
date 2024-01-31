@@ -19,7 +19,7 @@ namespace Application.Products
             IRepository<Product, Guid> productRepository,
             IRepository<Review, Guid> reviewRepository,
             IRepository<ProductImage, Guid> imageRepository
-            // IUnitOfWork unitOfWork
+        // IUnitOfWork unitOfWork
         )
         {
             _productRepository = productRepository;
@@ -27,10 +27,13 @@ namespace Application.Products
             _imageRepository = imageRepository;
             // _unitOfWork = unitOfWork;
         }
+
         public GenericData<ProductViewModel> GetProducts(ProductPage filter)
         {
             var data = new GenericData<ProductViewModel>();
             var products = _productRepository.GetAll();
+            var allReviews = _reviewRepository.GetAll();
+            var allImages = _imageRepository.GetAll();
 
             var result = products.Select(p => new ProductViewModel
             {
@@ -38,6 +41,7 @@ namespace Application.Products
                 ProductName = p.Name,
                 CreatedDate = p.CreatedDate,
                 CategoryId = p.CategoryId,
+                BrandId = p.BrandId,
                 Price = p.Price,
                 DiscountPrice = p.DiscountPrice,
             });
@@ -46,29 +50,38 @@ namespace Application.Products
             {
                 result = result.Where(s => s.CategoryId == categoryId);
             }
-
+            if (filter.SelectedBrandIds != null && filter.SelectedBrandIds.Any())
+            {
+                result = result.Where(s => filter.SelectedBrandIds.Contains(s.BrandId));
+            }
             if (filter.FromPrice.HasValue && filter.ToPrice.HasValue)
             {
-                result = result.Where(s => s.Price >= filter.FromPrice.Value && s.Price <= filter.ToPrice);
+                // if product has discount price, compare with discount price
+                result = result.Where(s => (s.Price >= filter.FromPrice.Value && s.Price <= filter.ToPrice.Value && s.DiscountPrice == null) || (s.DiscountPrice >= filter.FromPrice.Value && s.DiscountPrice <= filter.ToPrice.Value));
             }
-
             if (filter.ToPrice.HasValue && !filter.FromPrice.HasValue)
             {
-                result = result.Where(s => s.Price <= filter.ToPrice.Value);
+                // if product has discount price, compare with discount price
+                result = result.Where(s => (s.Price <= filter.ToPrice.Value && s.DiscountPrice == null) || s.DiscountPrice <= filter.ToPrice.Value);
             }
             if (filter.FromPrice.HasValue && !filter.ToPrice.HasValue)
             {
-                result = result.Where(s => s.Price >= filter.FromPrice.Value);
+                // if product has discount price, compare with discount price
+                result = result.Where(s => (s.Price >= filter.FromPrice.Value && s.DiscountPrice == null) || s.DiscountPrice >= filter.FromPrice.Value);
             }
-
+            if (filter.Rating.HasValue)
+            {
+                result = result.Where(s => allReviews.Where(rv => rv.ProductId == s.ProductId).Average(rv => rv.Rating) >= filter.Rating);
+            }
             if (!string.IsNullOrEmpty(filter.KeyWord))
             {
                 result = result.Where(s => s.ProductName.Contains(filter.KeyWord, StringComparison.OrdinalIgnoreCase));
             }
+
             switch (filter.SortBy)
             {
                 case SortEnum.Price:
-                    result = result.OrderBy(s => s.Price);
+                    result = result.OrderBy(s => s.DiscountPrice.HasValue ? s.DiscountPrice : s.Price);
                     break;
                 case SortEnum.Name:
                     result = result.OrderBy(s => s.ProductName);
@@ -76,33 +89,36 @@ namespace Application.Products
                 case SortEnum.Date:
                     result = result.OrderByDescending(s => s.CreatedDate);
                     break;
+                case SortEnum.Rating:
+                    result = result.OrderByDescending(s => allReviews.Where(rv => rv.ProductId == s.ProductId).Average(rv => rv.Rating));
+                    break;
                 default:
                     break;
             }
+
             data.Count = result.Count();
             var productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
 
-            var productIds = productViewModels.Select(p => p.ProductId).ToList();
-            var images = _imageRepository.GetAll().Where(i => productIds.Contains(i.ProductId));
-            var reviews = _reviewRepository.GetAll().Where(r => productIds.Contains(r.ProductId));
-            foreach (var product in productViewModels)
+            foreach (var productView in productViewModels)
             {
-                var image = images.FirstOrDefault(s => s.ProductId == product.ProductId);
-                if(image != null)
+                var productImage = allImages.FirstOrDefault(img => img.ProductId == productView.ProductId);
+                if (productImage != null)
                 {
-                    product.ImageUrl = image.ImageLink;
-                    product.ImageAlt = image.Alt;
+                    productView.ImageUrl = productImage.ImageLink;
+                    productView.ImageAlt = productImage.Alt;
                 }
-                var productReviews = reviews.Where(s => s.ProductId == product.ProductId);
-                product.ReviewCount = productReviews.Count();
-                if (product.ReviewCount > 0)
+
+                var productReviews = allReviews.Where(rv => rv.ProductId == productView.ProductId);
+                productView.ReviewCount = productReviews.Count();
+                if (productView.ReviewCount > 0)
                 {
-                    product.Rating = productReviews.Average(s => s.Rating);
+                    productView.Rating = productReviews.Average(s => s.Rating);
                 }
             }
 
             data.Data = productViewModels;
             return data;
         }
+
     }
 }

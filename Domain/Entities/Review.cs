@@ -13,7 +13,7 @@ namespace Domain.Entities
 		[Column(TypeName = "nvarchar(100)")]
 		public string Email { get; set; } = string.Empty;
 
-		[Column(TypeName = "ntext")]
+		[Column(TypeName = "nvarchar(max)")]
 		public string Content { get; set; } = string.Empty;
 		public int Rating { get; set; }
 

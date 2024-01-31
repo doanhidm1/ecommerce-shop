@@ -5,7 +5,7 @@ namespace Domain.Entities
 	[Table("ProductImages")]
 	public class ProductImage : BaseEntity
 	{
-		[Column(TypeName = "ntext")]
+		[Column(TypeName = "nvarchar(max)")]
 		public string ImageLink { get; set; } = string.Empty;
 
 		[Column(TypeName = "nvarchar(100)")]

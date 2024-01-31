@@ -16,8 +16,8 @@ builder.Services.AddScoped(typeof(IRepository<,>), typeof(EfRepository<,>));
 builder.Services.AddService();
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromHours(1);
-	options.Cookie.HttpOnly = true;
+    options.IdleTimeout = TimeSpan.FromHours(1);
+    options.Cookie.HttpOnly = true;
 });
 var app = builder.Build();
 
