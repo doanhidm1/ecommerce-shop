@@ -14,8 +14,9 @@ var dataTable =
 
         var total = 0;
         var model = new Object();
-        model.PageSize = homeconfig.pageSize
+        model.PageSize = homeconfig.pageSize;
         model.PageIndex = homeconfig.pageIndex;
+        model.IsFeatured = false;
 
         //optional cho phép vừa phân trang vừa lọc điều kiện
         // model.CategoryId = $(".input-radio input[type='radio']:checked").val()
@@ -79,6 +80,15 @@ var dataTable =
         });
     },
 }
+
+
+$.ajax({
+    type: 'post',
+    url: '/product/FeaturedProductsPartial', //url của action return ra partial view
+    success: function (data) {
+        $("#featured-product").html(data);
+    }
+});
 
 dataTable.loadData(true);
 

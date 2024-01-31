@@ -30,7 +30,6 @@ namespace Shop.Controllers
             {
                 Categories = _categoryService.GetCategories(),
                 Brands = _brandService.GetBrands(),
-                SelectPageSize = new List<int> { 6, 9, 18 },
                 OrderBys = EnumHelper.GetList(typeof(SortEnum))
             };
             return View(model);
@@ -39,6 +38,12 @@ namespace Shop.Controllers
         public IActionResult ProductListPartial([FromBody] ProductPage model)
         {
             var result = _productService.GetProducts(model);
+            return PartialView(result);
+        }
+
+        public IActionResult FeaturedProductsPartial()
+        {
+            var result = _productService.GetProducts(new ProductPage { IsFeatured = true });
             return PartialView(result);
         }
 

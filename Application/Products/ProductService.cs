@@ -44,7 +44,14 @@ namespace Application.Products
                 BrandId = p.BrandId,
                 Price = p.Price,
                 DiscountPrice = p.DiscountPrice,
+                IsFeatured = p.IsFeatured
             });
+
+            if (filter.IsFeatured)
+            {
+                result = result.Where(s => s.IsFeatured);
+                goto ImgAndReview;
+            }
 
             if (!string.IsNullOrEmpty(filter.CategoryId) && Guid.TryParse(filter.CategoryId, out Guid categoryId))
             {
@@ -95,9 +102,17 @@ namespace Application.Products
                 default:
                     break;
             }
-
+        ImgAndReview:
             data.Count = result.Count();
-            var productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
+            var productViewModels = new List<ProductViewModel>();
+            if (filter.IsFeatured)
+            {
+                productViewModels = result.ToList();
+            }
+            else
+            {
+                productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
+            }
 
             foreach (var productView in productViewModels)
             {

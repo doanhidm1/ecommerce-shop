@@ -9,5 +9,6 @@
         public int? Rating { get; set; }
         public SortEnum SortBy { get; set; }
         public List<Guid> SelectedBrandIds { get; set; } = new List<Guid>();
+        public bool IsFeatured { get; set; } = false;
     }
 }

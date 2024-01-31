@@ -13,5 +13,6 @@
         public decimal? DiscountPrice { get; set; }
         public double Rating { get; set; }
         public int ReviewCount { get; set; }
+        public bool IsFeatured { get; set; } = false;
     }
 }

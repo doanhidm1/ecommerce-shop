@@ -1,11 +1,11 @@
 ﻿@using Application;
 @using Application.Products;
-
 @model GenericData<ProductViewModel>
+
 
 @foreach (var item in Model.Data)
 {
-    <div class="col-6 col-md-4 col-xl-3 total-count" data-count=@Model.Count>
+    <div class="owl-item active" style="width: 217.6px; margin-right: 20px;">
         <div class="product">
             <figure class="product-media">
                 @if (item.IsFeatured)
@@ -19,33 +19,33 @@
                 @if (item.DiscountPrice > 0 && item.DiscountPrice < item.Price)
                 {
                     <span class="product-label label-sale">
-                        - @Math.Floor((1 - (decimal) item.DiscountPrice / item.Price) * 100) %</span >
+                        - @Math.Floor((1 - (decimal)item.DiscountPrice / item.Price) * 100) %
+                    </span>
                 }
-                <a href="">
+                <a href="#">
                     <img src="@item.ImageUrl" alt="@item.ImageAlt" class="product-image">
                 </a>
+
                 <div class="product-action-vertical">
                     <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view">
-                        <span>
-                            Quick view
-                        </span>
-                    </a>
+                    <a href="#" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
                 </div><!-- End .product-action-vertical -->
+
                 <div class="product-action">
                     <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
                 </div><!-- End .product-action -->
             </figure><!-- End .product-media -->
+
             <div class="product-body">
-                <h3 class="product-title"><a href="product.html">@item.ProductName</a></h3>
-                <!-- End .product-title -->
+                <h3 class="product-title"><a href="#">@item.ProductName</a></h3><!-- End .product-title -->
                 <div class="product-price">
-                    @if(item.DiscountPrice > 0 && item.DiscountPrice < item.Price)
+                    @if (item.DiscountPrice > 0 && item.DiscountPrice < item.Price)
                     {
                         <span class="new-price">@item.DiscountPrice ₫</span>
                         <span class="old-price"><del>@item.Price ₫</del></span>
-                    } else
+                    }
+                    else
                     {
                         <span class="price">@item.Price ₫</span>
                     }
@@ -60,14 +60,7 @@
                     </div>
                     <!-- End .rating-container -->
                 }
-
-                @*  <div class="product-nav product-nav-dots">
-            <a href="#" class="active" style="background: #dddad5;"><span class="sr-only">Color name</span></a>
-            <a href="#" style="background: #825a45;"><span class="sr-only">Color name</span></a>
-            </div><!-- End .product-nav --> *@
-
             </div><!-- End .product-body -->
-        </div><!-- End .product -->
+        </div>
     </div>
-    <!-- End .col-sm-6 col-md-4 col-xl-3 -->
 }
