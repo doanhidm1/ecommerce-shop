@@ -21,13 +21,13 @@
                     <span class="product-label label-sale">
                         - @Math.Floor((1 - (decimal) item.DiscountPrice / item.Price) * 100) %</span >
                 }
-                <a href="">
+                <a href="#">
                     <img src="@item.ImageUrl" alt="@item.ImageAlt" class="product-image">
                 </a>
                 <div class="product-action-vertical">
                     <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
-                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view">
+                    <a href="#" product-id="@item.ProductId" class="btn-product-icon btn-quickview" title="Quick view">
                         <span>
                             Quick view
                         </span>
@@ -38,7 +38,7 @@
                 </div><!-- End .product-action -->
             </figure><!-- End .product-media -->
             <div class="product-body">
-                <h3 class="product-title"><a href="product.html">@item.ProductName</a></h3>
+                <h3 class="product-title"><a href="#">@item.ProductName</a></h3>
                 <!-- End .product-title -->
                 <div class="product-price">
                     @if(item.DiscountPrice > 0 && item.DiscountPrice < item.Price)

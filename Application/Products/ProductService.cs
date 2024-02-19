@@ -6,6 +6,7 @@ namespace Application.Products
     public interface IProductService
     {
         GenericData<ProductViewModel> GetProducts(ProductPage model);
+        Task<ProductDetailViewModel> GetProductDetail(Guid productId);
     }
 
     public class ProductService : IProductService
@@ -40,6 +41,7 @@ namespace Application.Products
                 ProductId = p.Id,
                 ProductName = p.Name,
                 CreatedDate = p.CreatedDate,
+                Stock = p.Quantity,
                 CategoryId = p.CategoryId,
                 BrandId = p.BrandId,
                 Price = p.Price,
@@ -135,5 +137,34 @@ namespace Application.Products
             return data;
         }
 
+        public async Task<ProductDetailViewModel> GetProductDetail(Guid productId)
+        {
+            var product = await _productRepository.FindById(productId);
+            if (product == null)
+            {
+                return null;
+            }
+            var productImages = _imageRepository.GetAll().Where(s => s.ProductId == productId).ToList();
+            var productReviews = _reviewRepository.GetAll().Where(s => s.ProductId == productId).ToList();
+
+            var productDetail = new ProductDetailViewModel
+            {
+                ProductId = product.Id,
+                ProductName = product.Name,
+                CreatedDate = product.CreatedDate,
+                Stock = product.Quantity,
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+                Price = product.Price,
+                DiscountPrice = product.DiscountPrice,
+                IsFeatured = product.IsFeatured,
+                Description = product.Description,
+                ReviewCount = productReviews.Count(),
+                Rating = productReviews.Count() > 0 ? productReviews.Average(s => s.Rating) : null,
+                Images = productImages
+            };
+
+            return productDetail;
+        }
     }
 }
