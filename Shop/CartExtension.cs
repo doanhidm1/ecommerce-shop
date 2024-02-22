@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Demo
 {
-    public static class CartExtention
+    public static class CartExtension
     {
         public static void SetCart(this ISession session, string key, List<CartItemViewModel> value)
         {

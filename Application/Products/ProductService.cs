@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Products
 {
@@ -7,6 +8,7 @@ namespace Application.Products
     {
         GenericData<ProductViewModel> GetProducts(ProductPage model);
         Task<ProductDetailViewModel> GetProductDetail(Guid productId);
+        Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
     }
 
     public class ProductService : IProductService
@@ -137,6 +139,25 @@ namespace Application.Products
             return data;
         }
 
+        public async Task<CartItemViewModel> GetProductDetailForCart(Guid productId)
+        {
+            var product = await _productRepository.FindById(productId);
+            if (product == null)
+            {
+                return null;
+            }
+            var cartItem = new CartItemViewModel
+            {
+                ProductName = product.Name,
+                ProductId = product.Id,
+                Quantity = 1,
+                Image = GetProductImages(productId).Result.First().ImageLink ?? string.Empty,
+                Alt = GetProductImages(productId).Result.First().Alt ?? string.Empty,
+                Price = product.DiscountPrice.HasValue ? product.DiscountPrice.Value : product.Price,
+            };
+            return cartItem;
+        }
+
         public async Task<ProductDetailViewModel> GetProductDetail(Guid productId)
         {
             var product = await _productRepository.FindById(productId);
@@ -144,8 +165,8 @@ namespace Application.Products
             {
                 return null;
             }
-            var productImages = _imageRepository.GetAll().Where(s => s.ProductId == productId).ToList();
-            var productReviews = _reviewRepository.GetAll().Where(s => s.ProductId == productId).ToList();
+            var productImages = await GetProductImages(productId);
+            var productReviews = await GetProductReviews(productId);
 
             var productDetail = new ProductDetailViewModel
             {
@@ -167,6 +188,34 @@ namespace Application.Products
             };
 
             return productDetail;
+        }
+
+        public async Task<List<ImageViewModel>> GetProductImages(Guid productId)
+        {
+            var productImages = await _imageRepository.GetAll()
+                .Where(s => s.ProductId == productId)
+                .Select(s => new ImageViewModel
+                {
+                    Id = s.Id,
+                    ImageLink = s.ImageLink,
+                    Alt = s.Alt
+                }).ToListAsync();
+            return productImages;
+        }
+
+        public async Task<List<ReviewViewModel>> GetProductReviews(Guid productId)
+        {
+            var productReviews = await _reviewRepository.GetAll()
+                .Where(s => s.ProductId == productId)
+                .Select(s => new ReviewViewModel
+                {
+                    Id = s.Id,
+                    ReviewerName = s.ReviewerName,
+                    Content = s.Content,
+                    Rating = s.Rating,
+                    CreatedDate = s.CreatedDate
+                }).ToListAsync();
+            return productReviews;
         }
     }
 }
