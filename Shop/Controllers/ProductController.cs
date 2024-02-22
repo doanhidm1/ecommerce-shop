@@ -65,6 +65,7 @@ namespace Shop.Controllers
             // if product = null return view error in shared
             if (productViewModel == null)
             {
+                ViewBag.IsPopup = true;
                 return PartialView("PageNotFound");
             }
             return PartialView(productViewModel);

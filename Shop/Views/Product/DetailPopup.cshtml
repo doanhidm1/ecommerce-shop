@@ -28,14 +28,16 @@
                         }'>
                             @foreach (var image in Model.Images)
                             {
-                                <div class="magnific-img">
-                                    <a href="@image.ImageLink" class="intro-slide image-popup-vertical-fit" data-hash="@image.Id">
-                                        <img src="@image.ImageLink" alt="@image.Alt">
-                                    </a>
-                                </div>
+                                <a href="#" data-image="@image.ImageLink" data-zoom-image="@image.ImageLink class="intro-slide image-popup-vertical-fit" data-hash="@image.Id">
+                                    <img src="@image.ImageLink" alt="@image.Alt">
+                                </a>
                                 <!-- End .intro-slide -->
                             }
+                            
                         </div>
+                        <a href="#" id="btn-product-gallery" class="btn-product-gallery" style="bottom: auto">
+                            <i class="icon-arrows"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -95,14 +97,15 @@
                     <div class="product-details-quantity">
                         <input type="number" id="qty" class="form-control" value="1" min="1" max="@Model.Stock" step="1" data-decimals="0" required>
                     </div><!-- End .product-details-quantity -->
+                    <span class="ml-5"><strong>@Model.Stock</strong> available</span>
                 </div><!-- End .details-filter-row -->
-
+                <a href="#" class="btn-product btn-cart mt-3"><span>add to cart</span></a>
                 <div class="product-details-action">
                     <div class="details-action-wrapper">
                         <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                         <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
                     </div><!-- End .details-action-wrapper -->
-                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                    
                 </div>
             </div>
         </div>

@@ -21,7 +21,7 @@
                     <span class="product-label label-sale">
                         - @Math.Floor((1 - (decimal) item.DiscountPrice / item.Price) * 100) %</span >
                 }
-                <a href="#">
+                <a href="/product/detail?id=@item.ProductId">
                     <img src="@item.ImageUrl" alt="@item.ImageAlt" class="product-image">
                 </a>
                 <div class="product-action-vertical">
@@ -38,7 +38,7 @@
                 </div><!-- End .product-action -->
             </figure><!-- End .product-media -->
             <div class="product-body">
-                <h3 class="product-title"><a href="#">@item.ProductName</a></h3>
+                <h3 class="product-title"><a href="/product/detail?id=@item.ProductId">@item.ProductName</a></h3>
                 <!-- End .product-title -->
                 <div class="product-price">
                     @if(item.DiscountPrice > 0 && item.DiscountPrice < item.Price)

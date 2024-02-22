@@ -26,7 +26,8 @@
     <link rel="stylesheet" href="~/molla/assets/css/plugins/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="~/molla/assets/css/plugins/magnific-popup/magnific-popup.css">
     <!-- Main CSS File -->
-    <link rel="stylesheet" href="~/molla/assets/css/style.css"> 
+    <link rel="stylesheet" href="~/molla/assets/css/style.css">
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 
 <body>
@@ -1180,7 +1181,11 @@
 
     <!-- Main JS File -->
     <script src="~/molla/assets/js/main.js"></script>
-    <script src="~/molla/assets/js/demos/demo-4.js"></script>
+    <script src="~/molla/assets/js/jquery.elevateZoom.min.js"></script>
+
+    <script src="~/lib/notify/notify.min.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 <!-- molla/index-4.html  22 Nov 2019 09:54:18 GMT -->

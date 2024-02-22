@@ -159,9 +159,11 @@ namespace Application.Products
                 DiscountPrice = product.DiscountPrice,
                 IsFeatured = product.IsFeatured,
                 Description = product.Description,
+                Detail = product.Detail,
                 ReviewCount = productReviews.Count(),
                 Rating = productReviews.Count() > 0 ? productReviews.Average(s => s.Rating) : null,
-                Images = productImages
+                Images = productImages,
+                Reviews = productReviews
             };
 
             return productDetail;

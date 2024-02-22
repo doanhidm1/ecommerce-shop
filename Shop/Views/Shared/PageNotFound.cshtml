@@ -1,14 +1,23 @@
 ﻿
 @{
     ViewData["Title"] = "404";
-    Layout = null;
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
+@if (ViewBag.IsPopup == null)
+{
+    <link rel="stylesheet" href="~/molla/assets/css/bootstrap.min.css">
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+}
+
+<div class="ml-5 mr-5" style="background-color: white; text-align:center; align-content: center; height: 500px; border-radius: 8px">
+    <div>
+        <div>
             <h1>We're sorry, but the page you requested could not be found.</h1>
         </div>
+        @if (ViewBag.IsPopup == null)
+        {
+        @Html.ActionLink("Back to Home", "Index", "Home", new { area = "" }, new { @class = "btn btn-primary mt-3" })
+        }
     </div>
 </div>
 

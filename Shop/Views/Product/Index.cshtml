@@ -1,9 +1,11 @@
 @using Application.Products;
 @model ProductListingPageModel
 
-<link rel="stylesheet" href="~/molla/assets/css/plugins/nouislider/nouislider.css">
-<link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-13.css">
-<link rel="stylesheet" href="~/molla/assets/css/demos/demo-13.css">
+@section Styles {
+    <link rel="stylesheet" href="~/molla/assets/css/plugins/nouislider/nouislider.css">
+    <link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-13.css">
+    <link rel="stylesheet" href="~/molla/assets/css/demos/demo-13.css">
+}
 
 @* <p id="txt-categoryId" hidden>@Model.CategoryId</p>
 <p id="txt-keyword" hidden>@Model.KeyWord</p>
@@ -122,5 +124,4 @@
 @section Scripts {
     <script src="~/js/twb-pgination.js"></script>
     <script src="~/js/product-list.js"></script>
-
 }

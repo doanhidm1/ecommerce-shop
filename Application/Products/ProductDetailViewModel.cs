@@ -13,8 +13,10 @@ namespace Application.Products
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
         public bool IsFeatured { get; set; }
+        public string? Detail { get; set; }
         public string? Description { get; set; }
         public List<ProductImage> Images { get; set; } = new();
+        public List<Review> Reviews { get; set; } = new();
         public int ReviewCount { get; set; }
         public double? Rating { get; set; }
     }
