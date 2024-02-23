@@ -150,7 +150,7 @@ namespace Application.Products
             {
                 ProductName = product.Name,
                 ProductId = product.Id,
-                Quantity = 1,
+                Stock = product.Quantity,
                 Image = GetProductImages(productId).Result.First().ImageLink ?? string.Empty,
                 Alt = GetProductImages(productId).Result.First().Alt ?? string.Empty,
                 Price = product.DiscountPrice.HasValue ? product.DiscountPrice.Value : product.Price,

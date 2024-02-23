@@ -20,13 +20,22 @@ namespace Shop.Controllers
             return PartialView(cart ?? new List<CartItemViewModel>());
         }
 
-        public async Task<IActionResult> AddToCart(Guid productId)
+        public async Task<IActionResult> AddToCart(Guid productId, int qty)
         {
+            if(qty <= 0)
+            {
+                return Json(new ResponseResult(400, "Quantity must be greater than 0"));
+            }
             var cartItem = await _productService.GetProductDetailForCart(productId);
             if (cartItem == null)
             {
                 return Json(new ResponseResult(404, "Product is not found"));
             }
+            if (cartItem.Stock < qty)
+            {
+                return Json(new ResponseResult(400, "Product is out of stock"));
+            }
+            cartItem.Quantity = qty;
             var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
             if (cart == null)
             {
@@ -45,7 +54,7 @@ namespace Shop.Controllers
             var item = cart.FirstOrDefault(s => s.ProductId == cartItem.ProductId);
             if (item != null)
             {
-                item.Quantity += 1;
+                item.Quantity += cartItem.Quantity;
             }
             else
             {

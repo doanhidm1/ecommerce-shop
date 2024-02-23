@@ -1,9 +1,24 @@
 ﻿//function
 function addCart() {
+    var qty = null;
+    if (isNaN($(this).attr('qty')))
+    {
+        qty = Number($('#qty').val())
+    } else
+    {
+        qty = Number($(this).attr('qty'))
+    }
+    // check if qty is valid >=1, otherwise bootbox alert
+    if (isNaN(qty) || qty < 1) {
+            bootbox.alert({
+                message: "Quantity invalid",
+            });
+            return;
+        }
     var productId = $(this).attr('product-id')
     $.ajax({
         type: 'post',
-        url: '/cart/AddToCart/?productId=' + productId,
+        url: `/cart/AddToCart/?productId=${productId}&qty=${qty}`,
         success: function (data) {
             handleResponse(data)
         }
@@ -13,12 +28,25 @@ function addCart() {
 function confirmRemove() {
     var productId = $(this).attr('product-id')
     var productName = $(this).attr('product-name')
-    bootbox.confirm(`are you sure to delete ${productName}`, function (result) {
-        if (result) {
+    bootbox.confirm({
+        message: `Delete ${productName} from your cart?`,
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if (result) {
 
-            removeItem(productId)
+                removeItem(productId)
+            }
         }
-    })
+    });
 }
 function removeItem(productId) {
 
