@@ -25,27 +25,27 @@ namespace Persistence
             return await _context.Database.BeginTransactionAsync();
         }
 
-        public async Task CommitAsync()
-        {
-            if (_context.Database.CurrentTransaction == null)
-            {
-                return;
-            }
-            await _context.Database.CommitTransactionAsync();
-        }
+        //public async Task CommitAsync()
+        //{
+        //    if (_context.Database.CurrentTransaction == null)
+        //    {
+        //        return;
+        //    }
+        //    await _context.Database.CommitTransactionAsync();
+        //}
 
-        public async Task RollbackAsync()
-        {
-            if (_context.Database.CurrentTransaction == null)
-            {
-                return;
-            }
-            await _context.Database.RollbackTransactionAsync();
-        }
+        //public async Task RollbackAsync()
+        //{
+        //    if (_context.Database.CurrentTransaction == null)
+        //    {
+        //        return;
+        //    }
+        //    await _context.Database.RollbackTransactionAsync();
+        //}
 
-        public async ValueTask DisposeAsync()
-        {
-            await _context.DisposeAsync();
-        }
+        //public async ValueTask DisposeAsync()
+        //{
+        //    await _context.DisposeAsync();
+        //}
     }
 }

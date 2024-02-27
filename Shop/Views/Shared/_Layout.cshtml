@@ -141,10 +141,10 @@
                         </div><!-- End .compare-dropdown -->
 
                         <div class="wishlist">
-                            <a href="#" title="Wishlist">
+                            <a href="/wishlist" title="Wishlist">
                                 <div class="icon">
                                     <i class="icon-heart-o"></i>
-                                    <span class="wishlist-count badge">3</span>
+                                    <span id="wl-count" class="wishlist-count badge">0</span>
                                 </div>
                                 <p>Wishlist</p>
                             </a>
@@ -1121,6 +1121,7 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
     <script src="~/js/cart.js"></script>
+    <script src="~/js/wishlist.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 <!-- molla/index-4.html  22 Nov 2019 09:54:18 GMT -->

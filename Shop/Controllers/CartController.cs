@@ -15,7 +15,7 @@ namespace Shop.Controllers
 
         public IActionResult CartPartial()
         {
-            var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             return PartialView(cart ?? new List<CartItemViewModel>());
         }
 
@@ -35,15 +35,15 @@ namespace Shop.Controllers
                 return Json(new ResponseResult(400, "Product is out of stock"));
             }
             cartItem.Quantity = qty;
-            var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
-                HttpContext.Session.SetCart(ShopConstants.Cart, new List<CartItemViewModel>() { cartItem });
+                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, new List<CartItemViewModel>() { cartItem });
             }
             else
             {
                 UpdateCartItemQuantity(cart, cartItem);
-                HttpContext.Session.SetCart(ShopConstants.Cart, cart);
+                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, cart);
             }
             return Json(new ResponseResult(200, $"Add {cartItem.ProductName} to cart success!"));
         }
@@ -68,7 +68,7 @@ namespace Shop.Controllers
             {
                 return Json(new ResponseResult(404, "Product is not found"));
             }
-            var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
                 return Json(new ResponseResult(404, "Cart is empty"));
@@ -76,7 +76,7 @@ namespace Shop.Controllers
             else
             {
                 cart.RemoveAll(s => s.ProductId == productId);
-                HttpContext.Session.SetCart(ShopConstants.Cart, cart);
+                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, cart);
                 return Json(new ResponseResult(200, $"Remove {cartItem.ProductName} success!"));
             }
         }

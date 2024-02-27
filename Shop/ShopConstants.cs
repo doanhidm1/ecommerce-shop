@@ -3,5 +3,6 @@
     public class ShopConstants
     {
         public const string Cart = "Cart";
+        public const string Wishlist = "Wishlist";
     }
 }

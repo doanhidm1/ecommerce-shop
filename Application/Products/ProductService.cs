@@ -9,6 +9,7 @@ namespace Application.Products
         GenericData<ProductViewModel> GetProducts(ProductPage model);
         Task<ProductDetailViewModel> GetProductDetail(Guid productId);
         Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
+        Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId);
     }
 
     public class ProductService : IProductService
@@ -156,6 +157,25 @@ namespace Application.Products
                 Price = product.DiscountPrice.HasValue ? product.DiscountPrice.Value : product.Price,
             };
             return cartItem;
+        }
+
+        public async Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId)
+        {
+            var product = await _productRepository.FindById(productId);
+            if (product == null)
+            {
+                return null;
+            }
+            var wishlistItem = new WishlistItemViewModel
+            {
+                ProductName = product.Name,
+                ProductId = product.Id,
+                Stock = product.Quantity,
+                Image = GetProductImages(productId).Result.First().ImageLink ?? string.Empty,
+                Alt = GetProductImages(productId).Result.First().Alt ?? string.Empty,
+                Price = product.DiscountPrice.HasValue ? product.DiscountPrice.Value : product.Price,
+            };
+            return wishlistItem;
         }
 
         public async Task<ProductDetailViewModel> GetProductDetail(Guid productId)

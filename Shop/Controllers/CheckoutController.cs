@@ -1,6 +1,7 @@
 ﻿using Application;
 using Application.Checkout;
 using Application.Helper;
+using Application.Products;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace Shop.Controllers
         public IActionResult Index()
         {
             var model = new CheckoutViewModel();
-            var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             model.Items = cart;
             model.ShippingMethod = EnumHelper.GetList(typeof(PaymentMethod));
             return View(model);
@@ -33,7 +34,7 @@ namespace Shop.Controllers
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
                 return RedirectToAction("Index", "Checkout");
             }
-            var cart = HttpContext.Session.GetCart(ShopConstants.Cart);
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
                 return Json(new ResponseResult(400, "cart is empty"));
