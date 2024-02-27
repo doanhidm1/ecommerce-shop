@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 
 
-namespace Demo
+namespace Shop
 {
     public static class CartExtension
     {

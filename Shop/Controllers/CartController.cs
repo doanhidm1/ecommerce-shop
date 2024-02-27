@@ -1,6 +1,5 @@
 ﻿using Application;
 using Application.Products;
-using Demo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Controllers
