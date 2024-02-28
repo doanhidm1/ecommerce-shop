@@ -21,7 +21,7 @@ namespace Shop.Controllers
         [Route("/ErrorCode/404")]
         public IActionResult PageNotFound()
         {
-            return View();
+            return PartialView();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
