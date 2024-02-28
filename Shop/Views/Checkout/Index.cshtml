@@ -24,7 +24,7 @@
             <h1 class="page-title">Checkout</h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
-    @if (Model.Items != null)
+    @if (Model.Items.Any())
     {
         <div class="page-content mb-3">
             <div class="checkout">
@@ -78,7 +78,7 @@
 
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="terms">
-                                    <label class="custom-control-label" for="terms">I agree to the Shop's Terms and Conditions *</label>
+                                    <label class="custom-control-label" for="terms">I agree to the <a href="/pages/faq">terms and conditions</a> *</label>
                                 </div><!-- End .custom-checkbox -->
 
                                 <label>Order notes (optional)</label>

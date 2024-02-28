@@ -69,4 +69,4 @@ function handleResponseWishlist(data) {
 
 renderWishlist()
 $('body').on('click', '.btn-wishlist', addWishlist);
-$('body').on('click', '.btn-remove-wl', confirmRemove);
+$('body').on('click', '.btn-remove-wl', confirmRemoveWishlist);
