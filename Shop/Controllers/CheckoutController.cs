@@ -15,12 +15,13 @@ namespace Shop.Controllers
         {
             _billService = billService;
         }
-        public IActionResult Index()
+        public IActionResult Index(int PaymentMethod)
         {
             var model = new CheckoutViewModel();
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             model.Items = cart ?? new List<CartItemViewModel>();
             model.ShippingMethod = EnumHelper.GetList(typeof(PaymentMethod));
+            ViewBag.PaymentMethod = PaymentMethod;
             return View(model);
         }
 

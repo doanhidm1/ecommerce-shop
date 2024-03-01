@@ -1,5 +1,9 @@
 ﻿using Application;
+using Application.Checkout;
+using Application.Helper;
 using Application.Products;
+using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Controllers
@@ -11,6 +15,15 @@ namespace Shop.Controllers
         public CartController(IProductService productService)
         {
             _productService = productService;
+        }
+
+        public IActionResult Index()
+        {
+            var model = new CheckoutViewModel();
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
+            model.Items = cart ?? new List<CartItemViewModel>();
+            model.ShippingMethod = EnumHelper.GetList(typeof(PaymentMethod));
+            return View(model);
         }
 
         public IActionResult CartPartial()
@@ -79,6 +92,40 @@ namespace Shop.Controllers
                 HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, cart);
                 return Json(new ResponseResult(200, $"Remove {cartItem.ProductName} success!"));
             }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCart([FromBody] List<CartItemViewModel> updatedCart)
+        {
+            if (updatedCart == null || !updatedCart.Any())
+            {
+                return Json(new ResponseResult(400, "Invalid cart data"));
+            }
+
+            // Lấy giỏ hàng từ Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
+            if (cart == null)
+            {
+                return Json(new ResponseResult(404, "Cart is empty"));
+            }
+
+            // 1. Lấy danh sách sản phẩm chỉ chứa những sản phẩm cùng có mặt trong cả updatedCart và session
+            var updatedProducts = cart.Where(item => updatedCart.Any(updatedItem => updatedItem.ProductId == item.ProductId)).ToList();
+
+            // 2. Cập nhật số lượng sản phẩm trong danh sách
+            foreach (var updatedItem in updatedProducts)
+            {
+                var matchingCartItem = updatedCart.FirstOrDefault(item => item.ProductId == updatedItem.ProductId);
+                if (matchingCartItem != null)
+                {
+                    updatedItem.Quantity = matchingCartItem.Quantity;
+                }
+            }
+
+            // 3. Set lại giỏ hàng trong Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
+            HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, updatedProducts);
+
+            return Json(new ResponseResult(200, "Cart updated successfully"));
         }
     }
 }

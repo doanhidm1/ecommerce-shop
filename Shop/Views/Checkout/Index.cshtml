@@ -6,6 +6,7 @@
 
 @{
     ViewData["Title"] = "Checkout";
+    var pm = ViewBag.PaymentMethod != null ? (int) ViewBag.PaymentMethod : 0;
     var checkout = TempData["checkout"]?.ToString() ?? string.Empty;
     var data = JsonConvert.DeserializeObject<ResponseResult>(checkout);
     var message = data?.Message ?? string.Empty;
@@ -108,10 +109,10 @@
                                                 <td>Subtotal:</td>
                                                 <td>$@Model.Items.Sum(s => s.Quantity * s.Price)</td>
                                             </tr><!-- End .summary-subtotal -->
-                                            <tr>
+                                           @*  <tr>
                                                 <td>Shipping:</td>
                                                 <td>Free shipping</td>
-                                            </tr>
+                                            </tr> *@
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td>$@Model.Items.Sum(s => s.Quantity * s.Price)</td>
@@ -124,7 +125,7 @@
                                         @foreach (var item in Model.ShippingMethod)
                                         {
                                             <div class="input-radio" style="display:flex; align-items:center">
-                                                <input value="@item.Key" type="radio" name="PaymentMethod" id="payment-@item.Key" )>
+                                                <input value="@item.Key" type="radio" name="PaymentMethod" id="payment-@item.Key" @(item.Key == pm ? "checked" : "")>
                                                 <label class="ml-3" for="payment-@item.Key">@item.Value</label>
                                             </div>
                                         }
