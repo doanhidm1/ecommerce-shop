@@ -87,7 +87,7 @@ namespace Application.Products
             }
             if (!string.IsNullOrEmpty(filter.KeyWord))
             {
-                result = result.Where(s => s.ProductName.Contains(filter.KeyWord, StringComparison.OrdinalIgnoreCase));
+                result = result.Where(s => s.ProductName.Contains(filter.KeyWord));
             }
 
             switch (filter.SortBy)

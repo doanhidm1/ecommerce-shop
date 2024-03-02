@@ -53,7 +53,7 @@
                                                 </div><!-- End .cart-product-quantity -->
                                             </td>
                                             <td product-id="@item.ProductId" class="total-col">$@(item.Price * item.Quantity)</td>
-                                            <td class="remove-col"><button product-id="@item.ProductId" class="btn-remove"><i class="icon-close"></i></button></td>
+                                            <td class="remove-col"><button product-name="@item.ProductName" product-id="@item.ProductId" class="btn-remove-cart"><i class="icon-close"></i></button></td>
                                         </tr>
                                     }
                                 </tbody>

@@ -59,22 +59,55 @@ $('.cart-product-quantity input').on('input', function () {
 $('.pm-input').on('input', function () {
     var pm = $(this).val();
     $('.btn-order').attr('href', `/checkout?PaymentMethod=${pm}`);
-    
+
 });
 
 
-$('body').on('click', '.btn-remove', function (e) {
+$('body').on('click', '.btn-remove-cart', function (e) {
     var productId = $(this).attr("product-id");
-    // Xóa dòng có ID tương ứng
-    $('#' + productId).remove();
-    updateSubtotalAndTotal();
-});
-
+    var productName = $(this).attr('product-name')
+    bootbox.confirm({
+        message: `Delete ${productName} from your cart?`,
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                $('#' + productId).remove();
+                updateSubtotalAndTotal();
+            }
+        }
+    });
+})
 
 $('body').on('click', '#btn-update-cart', function (e) {
     e.preventDefault();
-    UpdateCart();
-    setTimeout(function () {
-        location.reload();
-    }, 3000);
-});
+    bootbox.confirm({
+        message: 'Save your cart changes?',
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                UpdateCart();
+                setTimeout(function () {
+                    location.reload();
+                }, 3000);
+            }
+        }
+    });
+})
