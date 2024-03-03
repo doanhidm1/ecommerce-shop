@@ -65,7 +65,7 @@ namespace Shop.Controllers
             {
                 model.ImageUrls = await SaveImage(model.Images);
                 await _productService.CreateProduct(model);
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Add {model.ProductName} successfully"));
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Created {model.ProductName} successfully"));
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -99,6 +99,48 @@ namespace Shop.Controllers
                 imageLinks.Add(fileUrl);
             }
             return imageLinks;
+        }
+
+        private void DeleteImage(List<ImageViewModel> images)
+        {
+            foreach (var image in images)
+            {
+                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+                string productImageDir = Path.Combine(uploadFolder, ImageFolder);
+                if (image.ImageLink == null) continue;
+                string fileName = image.ImageLink.Split('/').Last();
+                string filePath = Path.Combine(productImageDir, fileName);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+        }
+
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            try
+            {
+                var product = await _productService.GetProductDetail(id);
+                if (product == null)
+                {
+                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product not found!"));
+                    return RedirectToAction("Index");
+                }
+                // Delete images file
+                if (product.Images.Any())
+                {
+                    DeleteImage(product.Images);
+                }
+                await _productService.DeleteProduct(id);
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Product successfully deleted"));
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product failed to delete!"));
+                return RedirectToAction("Index");
+            }       
         }
     }
 }

@@ -97,7 +97,7 @@ namespace Shop.Controllers
         [HttpPost]
         public IActionResult UpdateCart([FromBody] List<CartItemViewModel> updatedCart)
         {
-            if (updatedCart == null || !updatedCart.Any())
+            if (updatedCart == null)
             {
                 return Json(new ResponseResult(400, "Invalid cart data"));
             }
@@ -108,9 +108,14 @@ namespace Shop.Controllers
             {
                 return Json(new ResponseResult(404, "Cart is empty"));
             }
+            var updatedProducts = updatedCart;
+            if (!updatedCart.Any())
+            {
+                goto SetCart;
+            }
 
             // 1. Lấy danh sách sản phẩm chỉ chứa những sản phẩm cùng có mặt trong cả updatedCart và session
-            var updatedProducts = cart.Where(item => updatedCart.Any(updatedItem => updatedItem.ProductId == item.ProductId)).ToList();
+            updatedProducts = cart.Where(item => updatedCart.Any(updatedItem => updatedItem.ProductId == item.ProductId)).ToList();
 
             // 2. Cập nhật số lượng sản phẩm trong danh sách
             foreach (var updatedItem in updatedProducts)
@@ -123,6 +128,7 @@ namespace Shop.Controllers
             }
 
             // 3. Set lại giỏ hàng trong Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
+            SetCart:
             HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, updatedProducts);
 
             return Json(new ResponseResult(200, "Cart updated successfully"));

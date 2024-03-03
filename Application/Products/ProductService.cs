@@ -11,6 +11,7 @@ namespace Application.Products
         Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
         Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId);
         Task CreateProduct(ProductCreateViewModel model);
+        Task DeleteProduct(Guid productId);
     }
 
     public class ProductService : IProductService
@@ -276,6 +277,42 @@ namespace Application.Products
                     _imageRepository.Add(image);
                     await _unitOfWork.SaveChangesAsync();
                 }
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task DeleteProduct(Guid productId)
+        {
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var product = await _productRepository.FindById(productId);
+                if (product == null)
+                {
+                    throw new Exception("Product not found");
+                }
+                // delete product images
+                var productImages = await _imageRepository.GetAll().Where(s => s.ProductId == productId).ToListAsync();
+                foreach (var item in productImages)
+                {
+                    _imageRepository.Delete(item);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                // delete product reviews
+                var productReviews = await _reviewRepository.GetAll().Where(s => s.ProductId == productId).ToListAsync();
+                foreach (var item in productReviews)
+                {
+                    _reviewRepository.Delete(item);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                // delete product
+                _productRepository.Delete(product);
+                await _unitOfWork.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
             catch (Exception ex)
