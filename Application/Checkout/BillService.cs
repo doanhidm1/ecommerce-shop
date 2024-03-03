@@ -22,10 +22,7 @@ namespace Application.Checkout
         public async Task CreateBill(BillCreateViewModel model)
         {
             using var transaction = await _unitOfWork.BeginTransactionAsync();
-            if (transaction == null)
-            {
-                return;
-            }
+            if (transaction == null) return;
             try
             {
                 var bill = new Bill
@@ -59,21 +56,17 @@ namespace Application.Checkout
                         ProductName = item.ProductName,
                         UnitPrice = item.Price,
                         Quantity = item.Quantity,
-
                     };
                     _billDetailRepository.Add(billDetail);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 await transaction.CommitAsync();
-
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 throw ex;
             }
-
         }
     }
-
 }

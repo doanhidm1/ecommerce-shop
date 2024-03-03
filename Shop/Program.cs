@@ -29,6 +29,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//app.UseExceptionHandler(new ExceptionHandlerOptions {
+//    AllowStatusCode404Response = true,
+//    ExceptionHandlingPath = "/ErrorCode/404"
+//});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();

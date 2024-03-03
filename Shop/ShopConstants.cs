@@ -4,5 +4,6 @@
     {
         public const string Cart = "Cart";
         public const string Wishlist = "Wishlist";
+        public const string UploadFolder = "Uploads";
     }
 }

@@ -33,7 +33,7 @@ namespace Shop.Controllers
             {
                 var response = new ResponseResult(400, "Invalid order information");
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
-                return RedirectToAction("Index", "Checkout");
+                return RedirectToAction("Index");
             }
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
@@ -66,13 +66,13 @@ namespace Shop.Controllers
                 var response = new ResponseResult(200, "Place order success");
                 HttpContext.Session.Remove(ShopConstants.Cart);
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
-                return RedirectToAction("Index", "Checkout");
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 var response = new ResponseResult(400, "Some thing went wrong");
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction("Index");
             }
         }
     }

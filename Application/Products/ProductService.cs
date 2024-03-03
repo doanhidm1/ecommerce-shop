@@ -10,6 +10,7 @@ namespace Application.Products
         Task<ProductDetailViewModel> GetProductDetail(Guid productId);
         Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
         Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId);
+        Task CreateProduct(ProductCreateViewModel model);
     }
 
     public class ProductService : IProductService
@@ -17,19 +18,19 @@ namespace Application.Products
         private readonly IRepository<Product, Guid> _productRepository;
         private readonly IRepository<Review, Guid> _reviewRepository;
         private readonly IRepository<ProductImage, Guid> _imageRepository;
-        // private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ProductService(
             IRepository<Product, Guid> productRepository,
             IRepository<Review, Guid> reviewRepository,
-            IRepository<ProductImage, Guid> imageRepository
-        // IUnitOfWork unitOfWork
+            IRepository<ProductImage, Guid> imageRepository,
+            IUnitOfWork unitOfWork
         )
         {
             _productRepository = productRepository;
             _reviewRepository = reviewRepository;
             _imageRepository = imageRepository;
-            // _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
         public GenericData<ProductViewModel> GetProducts(ProductPage filter)
@@ -236,6 +237,52 @@ namespace Application.Products
                     CreatedDate = s.CreatedDate
                 }).ToListAsync();
             return productReviews;
+        }
+
+        public async Task CreateProduct(ProductCreateViewModel model)
+        {
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var product = new Product
+                {
+                    Name = model.ProductName,
+                    Description = model.Description,
+                    Detail = model.Detail,
+                    Price = model.Price,
+                    DiscountPrice = model.DiscountPrice,
+                    Quantity = model.Quantity,
+                    CategoryId = model.CategoryId,
+                    BrandId = model.BrandId,
+                    IsFeatured = model.IsFeatured,
+                    Id = Guid.NewGuid(),
+                    CreatedDate = DateTime.Now,
+                    Status = Domain.Enums.EntityStatus.Active,
+                };
+                _productRepository.Add(product);
+                await _unitOfWork.SaveChangesAsync();
+                foreach (var item in model.ImageUrls)
+                {
+                    var image = new ProductImage
+                    {
+                        Id = Guid.NewGuid(),
+                        ImageLink = item,
+                        CreatedDate = product.CreatedDate,
+                        Status = Domain.Enums.EntityStatus.Active,
+                        ProductId = product.Id,
+                        Alt = product.Name
+
+                    };
+                    _imageRepository.Add(image);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
