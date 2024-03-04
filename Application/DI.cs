@@ -8,7 +8,7 @@ namespace Application
 {
     public static class DI
     {
-        public static void AddService(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();

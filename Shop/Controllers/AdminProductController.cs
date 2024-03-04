@@ -102,14 +102,14 @@ namespace Shop.Controllers
         }
 
         private void DeleteImage(List<ImageViewModel> images)
-        {
+        { 
+            var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+            var productImageDir = Path.Combine(uploadFolder, ImageFolder);
             foreach (var image in images)
             {
-                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
-                string productImageDir = Path.Combine(uploadFolder, ImageFolder);
                 if (image.ImageLink == null) continue;
-                string fileName = image.ImageLink.Split('/').Last();
-                string filePath = Path.Combine(productImageDir, fileName);
+                var fileName = image.ImageLink.Split('/').Last();
+                var filePath = Path.Combine(productImageDir, fileName);
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
