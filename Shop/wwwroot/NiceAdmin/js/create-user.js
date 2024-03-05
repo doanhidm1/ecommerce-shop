@@ -13,8 +13,10 @@ $('#create-user-form').validate({
         ConfirmPassword: {
             required: true,
             equalTo: "#Password"
+        },
+        Avatar: {
+            required: true
         }
-
     },
     messages: {
         UserName: {
@@ -31,6 +33,9 @@ $('#create-user-form').validate({
             required: "Confirm password is required",
             equalTo: "Confirm password must be the same as password"
         },
+        Avatar: {
+            required: "Avatar is required"
+        }
     }
 });
 

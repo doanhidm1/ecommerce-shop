@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.Accounts
@@ -22,6 +23,10 @@ namespace Application.Accounts
         [Compare("Password")]
         [PasswordPropertyText(true)]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public IFormFile Avatar { get; set; }
+        public string? AvatarUrl { get; set; }
 
         public List<string>? RoleIds { get; set; }
     }

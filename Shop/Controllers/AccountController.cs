@@ -1,6 +1,7 @@
 ﻿using Application;
 using Application.Accounts;
 using Domain.Abstractions;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +12,29 @@ namespace Shop.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AccountController
         (
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment webHostEnvironment
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
+
+        private const string ImageFolder = "AccountAvatars";
 
         public IActionResult Login()
         {
@@ -39,7 +45,7 @@ namespace Shop.Controllers
             return View();
         }
 
-        private async Task<IdentityUser?> FindUser(string input)
+        private async Task<User?> FindUser(string input)
         {
             return await _userManager.FindByEmailAsync(input) ?? await _userManager.FindByNameAsync(input);
         }
@@ -80,14 +86,14 @@ namespace Shop.Controllers
             return RedirectToAction("Login");
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Roles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
             return View(roles ?? new List<IdentityRole>());
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public IActionResult CreateRole()
         {
             return View();
@@ -142,13 +148,14 @@ namespace Shop.Controllers
             return View(model);
         }
 
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
-            return View(users ?? new List<IdentityUser>());
+            return View(users ?? new List<User>());
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser()
         {
             var roles = await _roleManager.Roles.ToListAsync();
@@ -181,12 +188,13 @@ namespace Shop.Controllers
             using var transaction = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var user = new IdentityUser
+                var user = new User
                 {
                     UserName = model.UserName,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber
                 };
+                user.AvatarUrl = await SaveImage(model.Avatar);
                 var userResult = await _userManager.CreateAsync(user, model.Password);
                 if (!userResult.Succeeded)
                 {
@@ -222,14 +230,32 @@ namespace Shop.Controllers
             }
         }
 
-        //private string GetErrorMessage(IdentityResult result)
-        //{
-        //    if (result.Errors.Any())
-        //    {
-        //        var errorMessage = string.Join(" ", result.Errors.Select(x => x.Description).ToList());
-        //        return errorMessage;
-        //    }
-        //    return string.Empty;
-        //}
+        private async Task<string> SaveImage(IFormFile image)
+        {
+            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+            string productImageDir = Path.Combine(uploadFolder, ImageFolder);
+            if (!Directory.Exists(productImageDir))
+            {
+                Directory.CreateDirectory(productImageDir);
+            }
+            string fileName = $"{Guid.NewGuid()}-{image.FileName}";
+            string fileUrl = $"/{ShopConstants.UploadFolder}/{ImageFolder}/{fileName}";
+            using var stream = new FileStream(Path.Combine(productImageDir, fileName), FileMode.Create);
+            await image.CopyToAsync(stream);
+            return fileUrl;
+        }
+
+        private void DeleteImage(string? image)
+        {
+            var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+            var productImageDir = Path.Combine(uploadFolder, ImageFolder);
+            if (image == null) return;
+            var fileName = image.Split('/').Last();
+            var filePath = Path.Combine(productImageDir, fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
     }
 }

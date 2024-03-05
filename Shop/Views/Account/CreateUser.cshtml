@@ -24,11 +24,18 @@
                 <div class="card-body">
                     <h5 class="card-title">Create new user</h5>
                     <!-- Multi Columns Form -->
-                    <form id="create-user-form" class="row g-3" method="post" action="/Account/CreateUser">
+                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/Account/CreateUser">
                         @Html.AntiForgeryToken()
                         <div class="col-md-6">
-                            <label for="UserName" class="form-label">Username*</label>
-                            <input name="UserName" type="text" class="form-control" id="UserName">
+                            <div class="row-6 mb-3">
+                                <label for="UserName" class="form-label">Username*</label>
+                                <input name="UserName" type="text" class="form-control" id="UserName">
+                            </div>
+
+                            <div class="row-6">
+                                <label for="Avatar" class="form-label">User Avatar*</label>
+                                <input name="Avatar" accept="image/*" class="form-control" type="file" id="Avatar">
+                            </div>
                         </div>
 
                         <div class="col-md-6">
@@ -47,13 +54,13 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="PhoneNumber" class="form-label">Phone Number</label>
-                            <input name="PhoneNumber" type="tel" id="PhoneNumber" class="form-control">
+                            <label for="Password" class="form-label">Password*</label>
+                            <input name="Password" type="password" class="form-control" id="Password">
                         </div>
 
                         <div class="col-md-6">
-                            <label for="Password" class="form-label">Password*</label>
-                            <input name="Password" type="password" class="form-control" id="Password">
+                            <label for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input name="PhoneNumber" type="tel" id="PhoneNumber" class="form-control">
                         </div>
 
                         <div class="col-md-6">

@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ShopDBContext>(options =>
         b => b.MigrationsAssembly(assembly)
 ));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ShopDBContext>();
 
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
