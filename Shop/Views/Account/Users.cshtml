@@ -2,6 +2,8 @@
 @using Domain.Entities
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Identity
+@using Domain.Entities
+@inject UserManager<User> _userManager
 @model List<User>
 
 @{
@@ -31,6 +33,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Role(s)</th>
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>2FA</th>
@@ -41,73 +44,85 @@
                             <tbody">
                             @foreach (var user in Model)
                             {
-                                <tr>
-                                    <td>@user.UserName</td>
-                                    <td>
-                                    @user.Email
-                                    @if (user.EmailConfirmed && user.Email != null)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmation Required" class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </span>
-                                    }
-                                    </td>
-                                    <td>
-                                    @user.PhoneNumber
-                                    @if (user.PhoneNumberConfirmed && user.PhoneNumber != null)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmation Required" class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </span>
-                                    }
-                                    </td>
-                                    <td>
-                                    @if (user.TwoFactorEnabled)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </span>
-                                    }
-                                    </td>
-                                    <td>
-                                    @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="@($"Locked until {user.LockoutEnd.Value.LocalDateTime.ToString("HH:mm:ss dd/MM/yyyy")}")" class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </span>
-                                    }
-                                    </td>
-                                    <td>
-                                        <a href="@Url.Action("UpdateUser", "Account", new {id = user.Id})" class="btn btn-sm btn-primary">Edit</a>
-                                        <a onclick="return confirm('Are you sure you want to delete this user?')" href="@Url.Action("DeleteUser", "Account", new {id = user.Id})" class="btn btn-sm btn-danger">Delete</a>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td>@user.UserName</td>
+                                        <td data-bs-toggle="collapse" data-bs-target="#@user.UserName" aria-expanded="false" aria-controls="@user.UserName">
+                                            Show
+                                            <ul class="list-group collapse" id="@user.UserName">
+                                            @{
+                                                var roles = await _userManager.GetRolesAsync(user) ?? new List<string>();
+                                                foreach (var role in roles)
+                                                {
+                                                        <li class="list-group-item">@role</li>
+                                                }
+                                            }
+                                            </ul>
+                                        </td>
+                                        <td>
+                                        @user.Email
+                                        @if (user.EmailConfirmed && user.Email != null)
+                                        {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                        }
+                                        else
+                                        {
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmation Required" class="badge bg-danger">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </span>
+                                        }
+                                        </td>
+                                        <td>
+                                        @user.PhoneNumber
+                                        @if (user.PhoneNumberConfirmed && user.PhoneNumber != null)
+                                        {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                        }
+                                        else
+                                        {
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmation Required" class="badge bg-danger">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </span>
+                                        }
+                                        </td>
+                                        <td>
+                                        @if (user.TwoFactorEnabled)
+                                        {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                        }
+                                        else
+                                        {
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </span>
+                                        }
+                                        </td>
+                                        <td>
+                                        @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
+                                        {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                        }
+                                        else
+                                        {
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="@($"Locked until {user.LockoutEnd.Value.LocalDateTime.ToString("HH:mm:ss dd/MM/yyyy")}")" class="badge bg-danger">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </span>
+                                        }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("UpdateUser", "Account", new {id = user.Id})" class="btn btn-sm btn-primary">Edit</a>
+                                            <a onclick="return confirm('Are you sure you want to delete this user? All roles assigned to this user will be removed!')" href="@Url.Action("DeleteUser", "Account", new {id = user.Id})" class="btn btn-sm btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
                             }
-                            </tbody>
+                                </tbody>
                         </table>
                         <!-- End Table with stripped rows -->
                     </div>

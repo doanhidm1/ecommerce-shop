@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 namespace Shop.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -36,6 +37,7 @@ namespace Shop.Controllers
 
         private const string ImageFolder = "AccountAvatars";
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             if (_signInManager.IsSignedIn(User))
@@ -52,6 +54,7 @@ namespace Shop.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -80,26 +83,31 @@ namespace Shop.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
 
-        // [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Access denied!"));
+            return RedirectToAction("Logout");
+        }
+
         public async Task<IActionResult> Roles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
             return View(roles ?? new List<IdentityRole>());
         }
 
-        // [Authorize(Roles = "Admin")]
         public IActionResult CreateRole()
         {
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -107,6 +115,11 @@ namespace Shop.Controllers
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Role not exist!"));
                 return RedirectToAction("Roles");
+            }
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name) ?? new List<User>();
+            foreach (var user in usersInRole)
+            {
+                await _userManager.UpdateSecurityStampAsync(user);
             }
             var result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
@@ -116,6 +129,36 @@ namespace Shop.Controllers
             }
             TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Delete role failed!"));
             return RedirectToAction("Roles");
+        }
+
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
+                return RedirectToAction("Users");
+            }
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "You can't delete yourself!"));
+                return RedirectToAction("Users");
+            }
+            var result =  await _userManager.UpdateSecurityStampAsync(user);
+            if (!result.Succeeded)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Update security stamp failed!"));
+                return RedirectToAction("Users");
+            }
+            DeleteImage(user.AvatarUrl);
+            result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Deleted user {user.UserName} successfully"));
+                return RedirectToAction("Users");
+            }
+            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Delete user failed!"));
+            return RedirectToAction("Users");
         }
 
         [HttpPost]
@@ -134,9 +177,7 @@ namespace Shop.Controllers
             }
             var role = new IdentityRole
             {
-                Name = model.RoleName,
-                NormalizedName = model.NormalizedName ?? model.RoleName.ToUpper(),
-                ConcurrencyStamp = model.ConcurrencyStamp ?? Guid.NewGuid().ToString()
+                Name = model.RoleName
             };
             var result = await _roleManager.CreateAsync(role);
             if (result.Succeeded)
@@ -148,14 +189,12 @@ namespace Shop.Controllers
             return View(model);
         }
 
-        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users.ToListAsync();
             return View(users ?? new List<User>());
         }
 
-        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser()
         {
             var roles = await _roleManager.Roles.ToListAsync();

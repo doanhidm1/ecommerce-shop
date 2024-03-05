@@ -29,10 +29,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 .AddCookie(option =>
                 {
                     option.LoginPath = "/Account/Login";
-                    option.AccessDeniedPath = "/Home/Index";
+                    option.AccessDeniedPath = "/Account/Login";
                     option.Cookie.HttpOnly = true;
                     option.Cookie.Expiration = TimeSpan.FromMinutes(15);
-                    option.SlidingExpiration = true;
+                    option.SlidingExpiration = false;
                 });
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -58,6 +58,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
+});
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromSeconds(30);
 });
 
 builder.Services.AddSession(options =>

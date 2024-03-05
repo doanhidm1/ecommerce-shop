@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace Shop.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class AdminProductController : Controller
     {
         private readonly IProductService _productService;
@@ -32,7 +33,6 @@ namespace Shop.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             var model = new ProductListingPageModel
@@ -44,7 +44,6 @@ namespace Shop.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var model = new ProductListingPageModel
@@ -55,7 +54,6 @@ namespace Shop.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Create(ProductCreateViewModel model)
@@ -74,12 +72,11 @@ namespace Shop.Controllers
             }
             catch (Exception)
             {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, $"Create product failed!"));   
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, $"Create product failed!"));
                 return RedirectToAction("Create");
-            }      
+            }
         }
 
-        [Authorize(Roles = "Admin")]
         public IActionResult ProductListPartial([FromBody] ProductPage model)
         {
             var result = _productService.GetProducts(model);
@@ -107,7 +104,7 @@ namespace Shop.Controllers
         }
 
         private void DeleteImage(List<ImageViewModel> images)
-        { 
+        {
             var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
             var productImageDir = Path.Combine(uploadFolder, ImageFolder);
             foreach (var image in images)
@@ -122,7 +119,6 @@ namespace Shop.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             try
@@ -133,7 +129,6 @@ namespace Shop.Controllers
                     TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product not found!"));
                     return RedirectToAction("Index");
                 }
-                // Delete images file
                 if (product.Images.Any())
                 {
                     DeleteImage(product.Images);
@@ -146,7 +141,7 @@ namespace Shop.Controllers
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product failed to delete!"));
                 return RedirectToAction("Index");
-            }       
+            }
         }
     }
 }

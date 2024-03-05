@@ -220,7 +220,7 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>@(user != null ? user.Email : "Default")</h6>
-                            <span>@(roles != null ? string.Join(", ", roles) : "Default")</span>
+                            <span>Role(s): @(roles != null ? string.Join(", ", roles) : "Default")</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -299,6 +299,7 @@
     <script src="~/lib/bootbox.js/bootbox.min.js"></script>
     <script src="~/lib/notify/notify.min.js"></script>
     <script src="~/js/twb-pgination.js"></script>
+    <script src="~/NiceAdmin/js/mark.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
