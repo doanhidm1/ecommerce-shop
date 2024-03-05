@@ -24,16 +24,16 @@
                     <form class="row g-3" method="post" enctype="multipart/form-data" action="/adminproduct/create" id="create-product-form">
                         @Html.AntiForgeryToken()
                         <div class="col-md-8">
-                            <label for="ProductName" class="form-label">Product name</label>
+                            <label for="ProductName" class="form-label">Product name*</label>
                             <input name="ProductName" type="text" class="form-control" id="ProductName">
                         </div>
                         <div class="col-md-4">
-                            <label for="Images" class="form-label">Product images</label>
+                            <label for="Images" class="form-label">Product images*</label>
                             <input name="Images" multiple accept="image/*" class="form-control" type="file" id="Images">
                         </div>
 
                         <div class="col-md-6">
-                            <label for="CategoryId" class="form-label">Category</label>
+                            <label for="CategoryId" class="form-label">Category*</label>
                             <select name="CategoryId" id="CategoryId" class="form-select" aria-label="Default select example">
                                 @foreach (var category in Model.Categories)
                                 {
@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="BrandId" class="form-label">Brand</label>
+                            <label for="BrandId" class="form-label">Brand*</label>
                             <select name="BrandId" id="BrandId" class="form-select" aria-label="Default select example">
                                 @foreach (var brand in Model.Brands)
                                 {
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label for="Price" class="form-label">Price</label>
+                            <label for="Price" class="form-label">Price*</label>
                             <input name="Price" type="number" class="form-control" id="Price">
                         </div>
 
@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="col-md-2">
-                            <label for="Quantity" class="form-label">Stock</label>
+                            <label for="Quantity" class="form-label">Stock*</label>
                             <input name="Quantity" type="number" class="form-control" id="Quantity">
                         </div>
 
@@ -75,12 +75,12 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="Description" class="form-label">Description</label>
+                            <label for="Description" class="form-label">Description*</label>
                             <textarea id="Description" name="Description" class="form-control" style="height: 100px"></textarea>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="Detail" class="form-label">Detail</label>
+                            <label for="Detail" class="form-label">Detail*</label>
                             <textarea id="Detail" name="Detail" class="form-control" style="height: 100px"></textarea>
                         </div>
 

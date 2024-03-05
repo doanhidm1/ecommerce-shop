@@ -5,9 +5,8 @@ namespace Application.Accounts
 {
     public class LoginViewModel
     {
-        [EmailAddress]
         [Required]
-        public string Email { get; set; }
+        public string EmailOrUsername { get; set; }
 
         [Required]
         [PasswordPropertyText(true)]

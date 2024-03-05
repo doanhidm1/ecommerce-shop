@@ -1,5 +1,15 @@
-﻿@{
+﻿﻿@using Application.Accounts;
+@using Newtonsoft.Json;
+@using Application;
+@model LoginViewModel
+
+@{
     Layout = null;
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
 }
 
 <!DOCTYPE html>
@@ -35,30 +45,32 @@
 
 <body>
     <main style="background-image: url('/NiceAdmin/img/bg-success.jpg');background-size: cover">
+        <p hidden id="message">@message</p>
+        <p hidden id="status">@status</p>
         <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center">
             <div class="card col-lg-3" style="max-width: 50%;background-color: rgba(255, 255, 255, 0.8);backdrop-filter: blur(2px); margin: 0">
                 <div class="card-body">
                     <div class="pt-4 pb-2">
                         <h3 class="text-center">Welcome back!</h3>
                     </div>
-                    <form method="post" class="row g-4">
-
+                    <form action="/account/login" method="post" class="row g-4" novalidate>
+                        @Html.AntiForgeryToken()
                         <div class="col-12">
-                            <label for="yourEmail" class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" id="yourEmail" required>
-                            <div class="invalid-feedback">Please enter your email!.</div>
+                            <label asp-for="EmailOrUsername" class="form-label">Username or Email*</label>
+                            <input asp-for="EmailOrUsername" class="form-control" required>
+                            <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
-                            <label for="yourPassword" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="yourPassword" required>
-                            <div class="invalid-feedback">Please enter your password!</div>
+                            <label asp-for="Password" class="form-label">Password*</label>
+                            <input type="password" asp-for="Password" class="form-control" required>
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                                <input class="form-check-input" type="checkbox" asp-for="RememberMe" value="true" id="rememberMe">
+                                <label class="form-check-label" asp-for="RememberMe">Remember me</label>
                             </div>
                         </div>
                         <div class="col-12">
@@ -71,4 +83,9 @@
     </main>
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </body>
+
+<script src="~/molla/assets/js/jquery.min.js"></script>
+<script src="~/lib/notify/notify.min.js"></script>
+<script src="~/NiceAdmin/js/result.js"></script>
+
 </html>

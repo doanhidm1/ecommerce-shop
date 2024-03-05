@@ -3,6 +3,7 @@ using Application.Brands;
 using Application.Categories;
 using Application.Helper;
 using Application.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -31,6 +32,7 @@ namespace Shop.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             var model = new ProductListingPageModel
@@ -42,6 +44,7 @@ namespace Shop.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var model = new ProductListingPageModel
@@ -52,6 +55,7 @@ namespace Shop.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Create(ProductCreateViewModel model)
@@ -75,6 +79,7 @@ namespace Shop.Controllers
             }      
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult ProductListPartial([FromBody] ProductPage model)
         {
             var result = _productService.GetProducts(model);
@@ -117,6 +122,7 @@ namespace Shop.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             try

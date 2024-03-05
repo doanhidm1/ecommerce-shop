@@ -12,6 +12,9 @@ namespace Application.Accounts
         [EmailAddress]
         public string Email { get; set; }
 
+        [Phone]
+        public string? PhoneNumber { get; set; }
+
         [Required]
         [PasswordPropertyText(true)]
         public string Password { get; set; }
@@ -20,7 +23,6 @@ namespace Application.Accounts
         [PasswordPropertyText(true)]
         public string ConfirmPassword { get; set; }
 
-        [Required]
-        public string RoleId { get; set; }
+        public List<string>? RoleIds { get; set; }
     }
 }
