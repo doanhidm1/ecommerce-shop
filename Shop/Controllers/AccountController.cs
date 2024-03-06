@@ -4,6 +4,7 @@ using Domain.Abstractions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace Shop.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailSender _emailSender;
 
         public AccountController
         (
@@ -25,7 +27,8 @@ namespace Shop.Controllers
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager,
             IUnitOfWork unitOfWork,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IEmailSender emailSender
         )
         {
             _userManager = userManager;
@@ -33,6 +36,7 @@ namespace Shop.Controllers
             _roleManager = roleManager;
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _emailSender = emailSender;
         }
 
         private const string ImageFolder = "AccountAvatars";
@@ -65,6 +69,11 @@ namespace Shop.Controllers
             if (user == null)
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
+                return View(model);
+            }
+            if (!user.EmailConfirmed)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User haven't confirmed email!"));
                 return View(model);
             }
             if (await _userManager.IsLockedOutAsync(user))
@@ -144,7 +153,7 @@ namespace Shop.Controllers
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "You can't delete yourself!"));
                 return RedirectToAction("Users");
             }
-            var result =  await _userManager.UpdateSecurityStampAsync(user);
+            var result = await _userManager.UpdateSecurityStampAsync(user);
             if (!result.Succeeded)
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Update security stamp failed!"));
@@ -239,6 +248,7 @@ namespace Shop.Controllers
                 {
                     throw new Exception("Create user failed!");
                 }
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _unitOfWork.SaveChangesAsync();
                 if (model.RoleIds != null)
                 {
@@ -257,6 +267,12 @@ namespace Shop.Controllers
                         await _unitOfWork.SaveChangesAsync();
                     }
                 }
+                var sendEmailResult = await SendConfirmEmail(user, token);
+
+                if (!sendEmailResult)
+                {
+                    throw new Exception("Send confirm email failed!");
+                }
                 await transaction.CommitAsync();
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Created user {user.UserName} successfully"));
                 return RedirectToAction("Users");
@@ -266,6 +282,22 @@ namespace Shop.Controllers
                 await transaction.RollbackAsync();
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Create user failed!"));
                 return RedirectToAction("CreateUser");
+            }
+        }
+
+        private async Task<bool> SendConfirmEmail(User user, string token)
+        {
+            try
+            {
+                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
+                var subject = "Confirm your email";
+                var message = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.";
+                await _emailSender.SendEmailAsync(user.Email, subject, message);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
@@ -294,6 +326,41 @@ namespace Shop.Controllers
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
+            }
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            try
+            {
+                if(userId == null || token == null)
+                {
+                    throw new Exception("User id or token is null!");
+                }
+                var user = await _userManager.FindByIdAsync(userId);
+                if(user == null)
+                {
+                    throw new Exception("User not exist!");
+                }
+                // check if user already confirmed
+                if(user.EmailConfirmed)
+                {
+                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User already confirmed!"));
+                    return RedirectToAction("Login");
+                }
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if(result.Succeeded)
+                {
+                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Confirm email successfully!"));
+                    return RedirectToAction("Login");
+                }
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Confirm email failed!"));
+                return RedirectToAction("Login");
+            } catch(Exception)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Invalid confirm information!"));
+                return RedirectToAction("Login");
             }
         }
     }

@@ -42,18 +42,27 @@
                             {
                                     <tr>
                                         <td>@role.Name</td>
-                                        <td data-bs-toggle="collapse" data-bs-target="#@role.Name" aria-expanded="false" aria-controls="@role.Name">
-                                            Show
-                                            <ul class="list-group collapse" id="@role.Name">
-                                            @{
-                                                var users = await _userManager.GetUsersInRoleAsync(role.Name) ?? new List<User>();
-                                                foreach (var user in users)
-                                                {
-                                                        <li class="list-group-item">@user.UserName</li>
-                                                }
-                                            }
-                                            </ul>
-                                        </td>
+                                    @{
+                                        var users = await _userManager.GetUsersInRoleAsync(role.Name) ?? new List<User>();
+                                        if (users.Any())
+                                        {
+                                                <td data-bs-toggle="collapse" data-bs-target="#@role.Name" aria-expanded="false" aria-controls="@role.Name">
+                                                    Show
+                                                    <ul class="list-group collapse" id="@role.Name">
+                                                    @{
+                                                        foreach (var user in users)
+                                                        {
+                                                                <li class="list-group-item">@user.UserName</li>
+                                                        }
+                                                    }
+                                                    </ul>
+                                                </td>
+                                        }
+                                        else
+                                        {
+                                                <td></td>
+                                        }
+                                    }
                                         <td>
                                             <a href="@Url.Action("UpdateRole", "Account", new {id = role.Id})" class="btn btn-sm btn-primary">Edit</a>
                                             <a onclick="return confirm('Are you sure you want to delete this role? The role will be removed for all users using it!')" href="@Url.Action("DeleteRole", "Account", new {id = role.Id})" class="btn btn-sm btn-danger">Delete</a>
@@ -71,7 +80,6 @@
     </section>
 
 </main><!-- End #main -->
-
-@section Scripts {
+                            @section Scripts {
     <script src="/NiceAdmin/js/result.js"></script>
-}
+                            }

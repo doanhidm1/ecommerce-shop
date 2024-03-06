@@ -46,18 +46,27 @@
                             {
                                     <tr>
                                         <td>@user.UserName</td>
-                                        <td data-bs-toggle="collapse" data-bs-target="#@user.UserName" aria-expanded="false" aria-controls="@user.UserName">
-                                            Show
-                                            <ul class="list-group collapse" id="@user.UserName">
-                                            @{
-                                                var roles = await _userManager.GetRolesAsync(user) ?? new List<string>();
-                                                foreach (var role in roles)
-                                                {
-                                                        <li class="list-group-item">@role</li>
-                                                }
-                                            }
-                                            </ul>
-                                        </td>
+                                    @{
+                                        var roles = await _userManager.GetRolesAsync(user) ?? new List<string>();
+                                        if (roles.Any())
+                                        {
+                                                <td data-bs-toggle="collapse" data-bs-target="#@user.UserName" aria-expanded="false" aria-controls="@user.UserName">
+                                                    Show
+                                                    <ul class="list-group collapse" id="@user.UserName">
+                                                    @{
+                                                        foreach (var role in roles)
+                                                        {
+                                                                <li class="list-group-item">@role</li>
+                                                        }
+                                                    }
+                                                    </ul>
+                                                </td>
+                                        }
+                                        else
+                                        {
+                                                <td></td>
+                                        }
+                                    }
                                         <td>
                                         @user.Email
                                         @if (user.EmailConfirmed && user.Email != null)
@@ -131,7 +140,6 @@
         </div>
     </section>
 </main><!-- End #main -->
-
-@section Scripts {
+                            @section Scripts {
     <script src="/NiceAdmin/js/result.js"></script>
-}
+                            }

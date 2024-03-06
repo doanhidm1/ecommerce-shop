@@ -1,10 +1,12 @@
 using Application;
+using Application.Accounts;
 using Domain.Abstractions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,10 @@ builder.Services.AddDbContext<ShopDBContext>(options =>
 ));
 
 builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<ShopDBContext>();
+    .AddEntityFrameworkStores<ShopDBContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(EfRepository<,>));
@@ -31,8 +36,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     option.LoginPath = "/Account/Login";
                     option.AccessDeniedPath = "/Account/Login";
                     option.Cookie.HttpOnly = true;
-                    option.Cookie.Expiration = TimeSpan.FromMinutes(15);
-                    option.SlidingExpiration = false;
+                    option.Cookie.Expiration = TimeSpan.FromMinutes(10);
+                    option.SlidingExpiration = true;
                 });
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -55,7 +60,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
     // SignIn settings.
-    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 });
