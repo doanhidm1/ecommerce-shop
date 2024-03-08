@@ -1,0 +1,61 @@
+﻿﻿@using Application
+@using Application.Accounts
+@using Newtonsoft.Json
+@model UpdateUserViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Update User</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update user @Model.UserName</h5>
+                    <!-- Multi Columns Form -->
+                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/Account/UpdateUser">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" hidden />
+                        <div class="col-md-6">
+                            <label asp-for="UserName" class="form-label">Username*</label>
+                            <input asp-for="UserName" type="text" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Avatar" class="form-label">User Avatar (leave for unchange)</label>
+                            <input asp-for="Avatar" accept="image/*" class="form-control" type="file">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">Email*</label>
+                            <input asp-for="Email" class="form-control" type="email">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control">
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+@section Scripts {
+    <script src="/NiceAdmin/js/result.js"></script>
+}

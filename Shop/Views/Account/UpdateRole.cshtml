@@ -1,0 +1,47 @@
+﻿﻿@using Application;
+@using Application.Accounts;
+@using Newtonsoft.Json;
+@model UpdateRoleViewModel
+
+@{
+    ViewData["Title"] = "CreateRole";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+<title>Update role</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update role @Model.RoleName</h5>
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3" method="post" action="/Account/UpdateRole">
+                        @Html.AntiForgeryToken()
+                        <div>
+                            <input asp-for="RoleId" hidden />
+                            <label asp-for="RoleName" class="form-label">Role name*</label>
+                            <input asp-for="RoleName" type="text" class="form-control">
+                            <span asp-validation-for="RoleName" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <button id="btn-create-product" type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+@section Scripts {
+    <script src="~/NiceAdmin/js/result.js"></script>
+}

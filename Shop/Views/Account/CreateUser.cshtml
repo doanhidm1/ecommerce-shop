@@ -4,7 +4,6 @@
 @model List<IdentityRole>
 
 @{
-    ViewData["Title"] = "CreateUser";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var response = TempData["response"]?.ToString() ?? string.Empty;
