@@ -103,8 +103,7 @@ namespace Shop.Controllers
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
-            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Access denied!"));
-            return RedirectToAction("Logout");
+            return View();
         }
 
         public async Task<IActionResult> UpdateUser(string id)
@@ -237,16 +236,16 @@ namespace Shop.Controllers
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
                 return RedirectToAction("Users");
             }
-            if(!user.UserName.Equals(model.UserName))
+            if (!user.UserName.Equals(model.UserName))
             {
                 var checkUser = await _userManager.FindByNameAsync(model.UserName);
-                if(checkUser != null)
+                if (checkUser != null)
                 {
                     TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "New username has been used!"));
                     return RedirectToAction("UpdateUser", new { id = user.Id });
                 }
                 user.UserName = model.UserName;
-            }        
+            }
             user.PhoneNumber = model.PhoneNumber;
             if (model.Avatar != null)
             {
@@ -311,7 +310,7 @@ namespace Shop.Controllers
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
                 return RedirectToAction("Login");
             }
-            if(user.Email.Equals(newEmail))
+            if (user.Email.Equals(newEmail))
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "New email is the same as old email!"));
                 return RedirectToAction("Login");
@@ -485,7 +484,7 @@ namespace Shop.Controllers
             return fileUrl;
         }
 
-        private void DeleteImage(string? image)
+        private void DeleteImage(string image)
         {
             var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
             var productImageDir = Path.Combine(uploadFolder, ImageFolder);

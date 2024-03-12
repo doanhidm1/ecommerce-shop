@@ -1,9 +1,11 @@
-﻿<aside id="sidebar" class="sidebar">
+﻿@model IList<string>?
+
+@* <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/adminproduct">
+            <a class="nav-link collapsed" href="/adminproduct/index">
                 <i class="bi bi-grid"></i>
                 <span>Products manage</span>
             </a>
@@ -24,4 +26,54 @@
         </li><!-- End Dashboard Nav -->
     </ul>
 
-</aside>
+</aside> *@
+
+@if (Model != null)
+{
+    if (Model.Contains("Admin"))
+    {
+        <aside id="sidebar" class="sidebar">
+
+            <ul class="sidebar-nav" id="sidebar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/adminproduct/index">
+                        <i class="bi bi-grid"></i>
+                        <span>Products manage</span>
+                    </a>
+                </li><!-- End Dashboard Nav -->
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/account/roles">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Roles manage</span>
+                    </a>
+                </li><!-- End Dashboard Nav -->
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/account/users">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Users manage</span>
+                    </a>
+                </li><!-- End Dashboard Nav -->
+            </ul>
+
+        </aside>
+        return;
+    }
+    if (Model.Contains("Manager"))
+    {
+        <aside id="sidebar" class="sidebar">
+
+            <ul class="sidebar-nav" id="sidebar-nav">
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/adminproduct/index">
+                        <i class="bi bi-grid"></i>
+                        <span>Products manage</span>
+                    </a>
+                </li>
+                <!-- End Dashboard Nav -->
+            </ul>
+        </aside>
+    }
+}

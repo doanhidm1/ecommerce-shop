@@ -34,7 +34,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 .AddCookie(option =>
                 {
                     option.LoginPath = "/Account/Login";
-                    option.AccessDeniedPath = "/Account/Login";
                     option.Cookie.HttpOnly = true;
                     option.Cookie.Expiration = TimeSpan.FromMinutes(10);
                     option.SlidingExpiration = true;
@@ -67,7 +66,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 {
-    options.ValidationInterval = TimeSpan.FromSeconds(30);
+    options.ValidationInterval = TimeSpan.FromSeconds(5);
 });
 
 builder.Services.AddSession(options =>

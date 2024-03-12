@@ -271,9 +271,9 @@
 
     </header><!-- End Header -->
     <!-- ======= Sidebar ======= -->
-    @await Html.PartialAsync("_AdminSidebar")
+    @await Html.PartialAsync("_AdminSidebar", roles)
     <!-- End Sidebar-->
-    @RenderBody();
+    @RenderBody()
 
     <!-- ======= Footer ======= -->
     <footer>

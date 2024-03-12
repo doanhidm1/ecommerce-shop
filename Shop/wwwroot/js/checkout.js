@@ -1,98 +1,114 @@
+$.validator.addMethod("phoneUS", function (phone_number, element) {
+    phone_number = phone_number.replace(/\s+/g, "");
+    return this.optional(element) || phone_number.match(/^0\d{9}$/);
+}, "Please enter a valid 10-digit phone number.");
+
+$.validator.addMethod("zipcode", function (value, element) {
+    return this.optional(element) || /^\d{5}$/.test(value);
+}, "Please enter a valid zip code.");
+
 $('#frm-customer-info').validate({
     rules: {
-        FirstName:
-        {
+        FirstName: {
             required: true,
         },
-        LastName:
-        {
+        LastName: {
             required: true,
         },
-        Street:
-        {
+        Street: {
             required: true,
         },
-        City:
-        {
+        City: {
             required: true,
         },
-        Country:
-        {
+        Country: {
             required: true,
         },
-        ZipCode:
-        {
+        ZipCode: {
             required: true,
-            number : true,
+            number: true,
+            zipcode: true,
         },
-        PhoneNumber:
-        {
+        PhoneNumber: {
             required: true,
+            phoneUS: true,
         },
-        Email:
-        {
+        Email: {
             required: true,
-            email : true,
+            email: true,
+        },
+        terms: {
+            required: true,
         },
     },
-
     messages: {
-        FirstName:
-        {
+        FirstName: {
             required: "Please enter your first name",
         },
-        LastName:
-        {
+        LastName: {
             required: "Please enter your last name",
         },
-        Street:
-        {
+        Street: {
             required: "Please enter your street",
         },
-        City:
-        {
+        City: {
             required: "Please enter your city",
         },
-        Country:
-        {
+        Country: {
             required: "Please enter your country",
         },
-        ZipCode:
-        {
+        ZipCode: {
             required: "Please enter your zip code",
+            number: "Please enter a valid zip code",
         },
-        PhoneNumber:
-        {
+        PhoneNumber: {
             required: "Please enter your phone number",
+            phoneUS: "Please enter a valid phone number",
         },
-        Email:
-        {
+        Email: {
             required: "Please enter your email",
+            email: "Please enter a valid email address",
+        },
+        terms: {
+            required: "Please accept the terms and conditions",
         },
     }
 });
 
+function updatePlaceOrderButtonState() {
+    var isValid = $('#frm-customer-info').valid();
+    //var selectedPaymentMethod = $('input[name="PaymentMethod"]:checked').val();
+    //var checkTerm = $('#terms').prop("checked");
+
+    //var isButtonDisabled = !isValid || selectedPaymentMethod === undefined ||
+    //    selectedPaymentMethod < 1 || selectedPaymentMethod > 3 ||
+    //    !checkTerm;
+
+    $('#btn-place-order').prop('disabled', !isValid);
+}
+
 function placeOrder(e) {
-    e.preventDefault()
+    e.preventDefault();
+
     if ($('#frm-customer-info').valid()) {
-        var selectedPaymentMethod = $('input[name="PaymentMethod"]:checked').val();
-        if (selectedPaymentMethod == undefined) {
-            $.notify("Please select a payment method!", "warn")
-            return
-        }
-        if (selectedPaymentMethod < 1 || selectedPaymentMethod > 3) {
-            $.notify("Invalid selected payment method!", "warn")
-            return
-        }
-        var checkTerm = $('#terms').prop("checked");
-        if (!checkTerm) {
-            $.notify("Please accept the terms and conditions!", "warn")
-            return
-        }
+        // Additional checks or actions can be added here before submitting the form
         var form = $('#frm-customer-info');
         form.submit();
     }
 }
+
+// check if form exists
+if ($('#frm-customer-info').length) {
+    // Initial state check
+    updatePlaceOrderButtonState();
+
+    // Update button state whenever the form changes
+    $('#frm-customer-info').on('input change', function () {
+        updatePlaceOrderButtonState();
+    });
+}
+
+
 
 function init() {
 
@@ -101,6 +117,17 @@ function init() {
     if (message != '') {
         var messageType = status == 200 ? "success" : "error"
         $.notify(message, messageType);
+    }
+    var pm = $('#payment-method').text();
+    if (pm != '') {
+        // get all option elements
+        var options = $('select[name="PaymentMethod"] option');
+        // find the option with the value of the hidden field
+        var selectedOption = options.filter(function () {
+            return $(this).val() == pm;
+        });
+        // select the option
+        selectedOption.prop('selected', true);
     }
 }
 init();

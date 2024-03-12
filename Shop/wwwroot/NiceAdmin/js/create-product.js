@@ -4,10 +4,18 @@ $('#create-product-form').validate({
             required: true
         },
         Price: {
-            required: true
+            required: true,
+            number: true,
+            min: 1
+        },
+        DiscountPrice: {
+            number: true,
+            min: 1
         },
         Quantity: {
-            required: true
+            required: true,
+            number: true,
+            min: 1
         },
         Detail: {
             required: true
@@ -30,10 +38,14 @@ $('#create-product-form').validate({
             required: "Product name is required"
         },
         Price: {
-            required: "Price is required"
+            required: "Price is required",
+            number: "Price must be a number",
+            min: "Price must be greater than 0"
         },
         Quantity: {
-            required: "Quantity is required"
+            required: "Quantity is required",
+            number: "Quantity must be a number",
+            min: "Quantity must be greater than 0"
         },
         Detail: {
             required: "Detail is required"
@@ -49,8 +61,27 @@ $('#create-product-form').validate({
         },
         Images: {
             required: "Images is required"
+        },
+        DiscountPrice: {
+            number: "Discount price must be a number",
+            min: "Discount price must be greater than 0"
         }
     }
+});
+
+function updateSubmitButtonState() {
+    // if user give discount price, check if it smaller than price   
+    var dPriceCheck = parseFloat($('#DiscountPrice').val()) < parseFloat($('#Price').val())
+    var isValid = $('#create-product-form').valid();
+    $('#btn-create-product').prop('disabled', !(isValid && dPriceCheck));
+}
+
+// Initial state check
+// updateSubmitButtonState();
+
+// Update button state whenever the form changes
+$('#create-product-form').on('input change', function () {
+    updateSubmitButtonState();
 });
 
 function save(e) {

@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = "Checkout";
-    var pm = ViewBag.PaymentMethod != null ? (int) ViewBag.PaymentMethod : 0;
+    var pm = ViewBag.PaymentMethod != null ? (int)ViewBag.PaymentMethod : 0;
     var checkout = TempData["checkout"]?.ToString() ?? string.Empty;
     var data = JsonConvert.DeserializeObject<ResponseResult>(checkout);
     var message = data?.Message ?? string.Empty;
@@ -17,9 +17,12 @@
     <link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-4.css">
 }
 
+<title>Checkout</title>
+
 <main class="main">
     <p hidden id="check-out-message">@message</p>
     <p hidden id="check-out-status">@status</p>
+    <p hidden id="payment-method">@pm</p>
     <div class="page-header text-center" style="background-image: url('/molla/assets/images/page-header-bg.jpg')">
         <div class="container">
             <h1 class="page-title">Checkout</h1>
@@ -65,27 +68,30 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <label for="zipcode">ZIP Code *</label>
-                                        <input id="zipcode" name="ZipCode" type="text" class="form-control" required>
+                                        <input maxlength="5" id="zipcode" name="ZipCode" type="text" class="form-control" required>
                                     </div><!-- End .col-sm-6 -->
 
                                     <div class="col-sm-6">
                                         <label for="phone">Phone *</label>
-                                        <input id="phone" name="PhoneNumber" type="tel" class="form-control" required>
+                                        <input maxlength="10" id="phone" name="PhoneNumber" type="tel" class="form-control" required>
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
 
                                 <label for="email">Email address *</label>
                                 <input id="email" name="Email" type="email" class="form-control" required>
 
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="terms">
-                                    <label class="custom-control-label" for="terms">I agree to the <a href="/pages/faq">terms and conditions</a> *</label>
+                                <div class="custom-control custom-checkbox col-md-9">
+                                    <input name ="terms" type="checkbox" class="custom-control-input" id="terms">
+                                    <label  class="custom-control-label" for="terms">I agree to the <a href="/pages/faq">terms and conditions</a> *</label>
                                 </div><!-- End .custom-checkbox -->
 
                                 <label>Order notes (optional)</label>
                                 <textarea name="Note" class="form-control" cols="30" rows="4"></textarea>
                             </div><!-- End .col-lg-9 -->
-                            <aside class="col-lg-3 mt-3">
+                            <aside style=".btn-outline-primary-2.disabled,.btn-outline-primary-2:disabled {
+    color: #686868;
+    background-color: transparent
+}" class="col-lg-3 mt-3">
                                 <div class="summary">
                                     <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
@@ -109,10 +115,10 @@
                                                 <td>Subtotal:</td>
                                                 <td>$@Model.Items.Sum(s => s.Quantity * s.Price)</td>
                                             </tr><!-- End .summary-subtotal -->
-                                           @*  <tr>
-                                                <td>Shipping:</td>
-                                                <td>Free shipping</td>
-                                            </tr> *@
+                                            @*  <tr>
+                                        <td>Shipping:</td>
+                                        <td>Free shipping</td>
+                                        </tr> *@
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td>$@Model.Items.Sum(s => s.Quantity * s.Price)</td>
@@ -120,20 +126,19 @@
                                         </tbody>
                                     </table><!-- End .table table-summary -->
 
-                                    <div class="accordion-summary" id="accordion-payment">
-                                        <h6 class="accordion-title">Payment Method</h6>
-                                        @foreach (var item in Model.ShippingMethod)
-                                        {
-                                            <div class="input-radio" style="display:flex; align-items:center">
-                                                <input value="@item.Key" type="radio" name="PaymentMethod" id="payment-@item.Key" @(item.Key == pm ? "checked" : "")>
-                                                <label class="ml-3" for="payment-@item.Key">@item.Value</label>
-                                            </div>
-                                        }
-                                    </div><!-- End .accordion -->
+                                    <div class="d-flex justify-content-between">
+                                        <label for="PaymentMethod">Payment Method *</label>
+                                        <select name="PaymentMethod" class="form-select">
+                                            @foreach (var item in Model.ShippingMethod)
+                                            {
+                                                <option value="@item.Key" >@item.Value</option>
+                                            }
+                                        </select><!-- End .accordion -->
+                                    </div>
 
-                                    <button id="btn-place-order" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    <button id="btn-place-order" type="submit" class="mt-2 btn btn-outline-primary-2 btn-order btn-block">
                                         <span class="btn-text">Place Order</span>
-                                        <span class="btn-hover-text">Proceed to Checkout</span>
+                                        <span class="btn-hover-text">Place Order</span>
                                     </button>
                                 </div><!-- End .summary -->
                             </aside><!-- End .col-lg-3 -->

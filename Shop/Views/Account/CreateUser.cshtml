@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="RoleIds" class="form-label">Role(s)</label>
+                            <label for="RoleIds" class="form-label">Role(s)*</label>
                             <select name="RoleIds" multiple id="RoleIds" class="form-select" aria-label="Default select example">
                                 @foreach (var role in Model)
                                 {
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button id="btn-create-user" type="button" class="btn btn-primary">Submit</button>
+                            <button disabled id="btn-create-user" type="button" class="btn btn-primary">Submit</button>
                             <button type="reset" class="btn btn-secondary">Reset</button>
                         </div>
                     </form><!-- End Multi Columns Form -->

@@ -28,6 +28,6 @@ namespace Application.Accounts
         public IFormFile Avatar { get; set; }
         public string? AvatarUrl { get; set; }
 
-        public List<string>? RoleIds { get; set; }
+        public List<string> RoleIds { get; set; }
     }
 }
