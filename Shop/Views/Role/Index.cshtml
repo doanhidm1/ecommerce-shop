@@ -26,7 +26,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 style="display: inline-block" class="card-title col-sm-2">All roles (@Model.Count)</h5>
-                        <a href="/Account/CreateRole" type="button" class="btn btn-success">Add new</a>
+                        <a href="/Role/Create" type="button" class="btn btn-success">Add new</a>
 
                         <!-- Table with stripped rows -->
                         <table style="text-align: center" class="table datatable table-hover table-bordered">
@@ -64,8 +64,8 @@
                                         }
                                     }
                                         <td>
-                                            <a href="@Url.Action("UpdateRole", "Account", new {id = role.Id})" class="btn btn-sm btn-primary">Edit</a>
-                                            <a onclick="return confirm('Are you sure you want to delete this role? The role will be removed for all users using it!')" href="@Url.Action("DeleteRole", "Account", new {id = role.Id})" class="btn btn-sm btn-danger">Delete</a>
+                                            <a href="@Url.Action("Update", "Role", new {id = role.Id})" class="btn btn-sm btn-primary">Edit</a>
+                                            <a onclick="return confirm('Are you sure you want to delete this role? The role will be removed for all users using it!')" href="@Url.Action("Delete", "Role", new {id = role.Id})" class="btn btn-sm btn-danger">Delete</a>
                                         </td>
                                     </tr>
                             }

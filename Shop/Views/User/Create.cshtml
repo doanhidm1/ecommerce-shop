@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Create new user</h5>
                     <!-- Multi Columns Form -->
-                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/Account/CreateUser">
+                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/User/Create">
                         @Html.AntiForgeryToken()
                         <div class="col-md-6">
                             <div class="row-6 mb-3">
@@ -38,11 +38,11 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="RoleIds" class="form-label">Role(s)*</label>
-                            <select name="RoleIds" multiple id="RoleIds" class="form-select" aria-label="Default select example">
+                            <label for="Roles" class="form-label">Role(s)*</label>
+                            <select name="Roles" multiple id="Roles" class="form-select" aria-label="Default select example">
                                 @foreach (var role in Model)
                                 {
-                                    <option value="@role.Id">@role.Name</option>
+                                    <option value="@role.Name">@role.Name</option>
                                 })
                             </select>
                         </div>

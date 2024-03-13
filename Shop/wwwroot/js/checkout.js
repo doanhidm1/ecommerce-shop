@@ -77,13 +77,6 @@ $('#frm-customer-info').validate({
 
 function updatePlaceOrderButtonState() {
     var isValid = $('#frm-customer-info').valid();
-    //var selectedPaymentMethod = $('input[name="PaymentMethod"]:checked').val();
-    //var checkTerm = $('#terms').prop("checked");
-
-    //var isButtonDisabled = !isValid || selectedPaymentMethod === undefined ||
-    //    selectedPaymentMethod < 1 || selectedPaymentMethod > 3 ||
-    //    !checkTerm;
-
     $('#btn-place-order').prop('disabled', !isValid);
 }
 
@@ -99,9 +92,6 @@ function placeOrder(e) {
 
 // check if form exists
 if ($('#frm-customer-info').length) {
-    // Initial state check
-    updatePlaceOrderButtonState();
-
     // Update button state whenever the form changes
     $('#frm-customer-info').on('input change', function () {
         updatePlaceOrderButtonState();

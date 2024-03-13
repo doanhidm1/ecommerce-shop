@@ -1,3 +1,7 @@
+$.validator.addMethod("checkDiscountPrice", function (value, element) {
+    return this.optional(element) || parseFloat(value) < parseFloat($('#Price').val());
+}, "Discount price must be smaller than price");
+
 $('#create-product-form').validate({
     rules: {
         ProductName: {
@@ -10,7 +14,8 @@ $('#create-product-form').validate({
         },
         DiscountPrice: {
             number: true,
-            min: 1
+            min: 1,
+            checkDiscountPrice: true
         },
         Quantity: {
             required: true,
@@ -71,9 +76,9 @@ $('#create-product-form').validate({
 
 function updateSubmitButtonState() {
     // if user give discount price, check if it smaller than price   
-    var dPriceCheck = parseFloat($('#DiscountPrice').val()) < parseFloat($('#Price').val())
+    // var dPriceCheck = parseFloat($('#DiscountPrice').val()) < parseFloat($('#Price').val())
     var isValid = $('#create-product-form').valid();
-    $('#btn-create-product').prop('disabled', !(isValid && dPriceCheck));
+    $('#btn-create-product').prop('disabled', !isValid);
 }
 
 // Initial state check

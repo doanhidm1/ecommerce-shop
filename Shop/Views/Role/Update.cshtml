@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Update role @Model.RoleName</h5>
                     <!-- Multi Columns Form -->
-                    <form class="row g-3" method="post" action="/Account/UpdateRole">
+                    <form class="row g-3" method="post" action="/Role/Update">
                         @Html.AntiForgeryToken()
                         <div>
                             <input asp-for="RoleId" hidden />

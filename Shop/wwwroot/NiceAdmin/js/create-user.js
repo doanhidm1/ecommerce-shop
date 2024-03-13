@@ -8,6 +8,10 @@ $.validator.addMethod("username", function (value, element) {
     return this.optional(element) || /^[a-zA-Z0-9_-]+$/.test(value);
 }, "User name can only contain letters, numbers, underscores, and hyphens.");
 
+$.validator.addMethod("password", function (value, element) {
+    return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,}$/.test(value);
+}, "Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 6 characters long.");
+
 $('#create-user-form').validate({
     rules: {
         UserName: {
@@ -19,7 +23,8 @@ $('#create-user-form').validate({
             email: true
         },
         Password: {
-            required: true
+            required: true,
+            password: true
         },
         ConfirmPassword: {
             required: true,
@@ -28,7 +33,7 @@ $('#create-user-form').validate({
         Avatar: {
             required: true
         },
-        RoleIds: {
+        Roles: {
             required: true
         },
         PhoneNumber: {
@@ -45,7 +50,8 @@ $('#create-user-form').validate({
             email: "Email is invalid"
         },
         Password: {
-            required: "Password is required"
+            required: "Password is required",
+            password: "Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 6 characters long."
         },
         ConfirmPassword: {
             required: "Confirm password is required",
@@ -54,7 +60,7 @@ $('#create-user-form').validate({
         Avatar: {
             required: "Avatar is required"
         },
-        RoleIds: {
+        Roles: {
             required: "Select at least one role"
         },
         PhoneNumber: {

@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Update user @Model.UserName</h5>
                     <!-- Multi Columns Form -->
-                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/Account/UpdateUser">
+                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/User/Update">
                         @Html.AntiForgeryToken()
                         <input asp-for="Id" hidden />
                         <div class="col-md-6">
