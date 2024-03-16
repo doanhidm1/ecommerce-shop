@@ -1,5 +1,4 @@
 ﻿using Domain.Enums;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
@@ -21,7 +20,7 @@ namespace Domain.Entities
 
         [Column(TypeName = "nvarchar(100)")]
         public string Country { get; set; }
-        
+
         public int ZipCode { get; set; }
 
         [Column(TypeName = "nvarchar(20)")]
@@ -30,7 +29,7 @@ namespace Domain.Entities
         [Column(TypeName = "nvarchar(100)")]
         public string Email { get; set; }
 
-        [Column(TypeName ="ntext")]
+        [Column(TypeName = "ntext")]
         public string? Note { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]

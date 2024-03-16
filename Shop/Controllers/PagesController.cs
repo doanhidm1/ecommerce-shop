@@ -11,7 +11,7 @@ namespace Shop.Controllers
 
         public IActionResult Contact()
         {
-			return View();
-		}
+            return View();
+        }
     }
 }

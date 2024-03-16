@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Products
+﻿namespace Application.Products
 {
     public class ProductDetailViewModel
     {

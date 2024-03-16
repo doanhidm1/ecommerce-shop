@@ -32,7 +32,7 @@ namespace Shop.Controllers
                 return Json(new ResponseResult(404, "Product is not found"));
             }
             var wishlist = HttpContext.Session.GetT<WishlistItemViewModel>(ShopConstants.Wishlist);
-            
+
             if (wishlist == null)
             {
                 HttpContext.Session.SetT<WishlistItemViewModel>(ShopConstants.Wishlist, new List<WishlistItemViewModel>() { wishlistItem });

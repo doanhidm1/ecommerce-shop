@@ -3,7 +3,6 @@ using Application.Checkout;
 using Application.Helper;
 using Application.Products;
 using Domain.Enums;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Controllers
@@ -34,7 +33,7 @@ namespace Shop.Controllers
 
         public async Task<IActionResult> AddToCart(Guid productId, int qty)
         {
-            if(qty <= 0)
+            if (qty <= 0)
             {
                 return Json(new ResponseResult(400, "Quantity must be greater than 0"));
             }
@@ -127,8 +126,8 @@ namespace Shop.Controllers
                 }
             }
 
-            // 3. Set lại giỏ hàng trong Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
-            SetCart:
+        // 3. Set lại giỏ hàng trong Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
+        SetCart:
             HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, updatedProducts);
 
             return Json(new ResponseResult(200, "Cart updated successfully"));

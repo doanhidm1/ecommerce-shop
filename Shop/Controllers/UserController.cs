@@ -241,7 +241,7 @@ namespace Shop.Controllers
                 System.IO.File.Delete(filePath);
             }
         }
-    
+
         public async Task<IActionResult> Permission(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -253,7 +253,7 @@ namespace Shop.Controllers
             var userRoles = await _userManager.GetRolesAsync(user);
             var model = new UpdateUserRoleViewModel
             {
-                Id =  user.Id,
+                Id = user.Id,
                 UserName = user.UserName!,
                 CurrentRoles = await _userManager.GetRolesAsync(user),
             };
@@ -277,7 +277,8 @@ namespace Shop.Controllers
             }
             var userRoles = await _userManager.GetRolesAsync(user);
             using var transaction = await _unitOfWork.BeginTransactionAsync();
-            try { 
+            try
+            {
                 var addRolesResult = await _userManager.AddToRolesAsync(user, model.CurrentRoles!.Except(userRoles));
                 if (!addRolesResult.Succeeded)
                 {

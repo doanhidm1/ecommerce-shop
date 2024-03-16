@@ -20,7 +20,7 @@ namespace Shop.Controllers
 
         private const string ImageFolder = "AccountAvatars";
 
-        
+
         public AccountController
         (
             UserManager<User> userManager,
@@ -129,7 +129,7 @@ namespace Shop.Controllers
             TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Change password failed!"));
             return RedirectToAction("Profile");
         }
-    
+
         [HttpPost]
         public async Task<IActionResult> Update(UpdateAccountViewModel model)
         {

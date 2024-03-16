@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace Application.Accounts
+﻿namespace Application.Accounts
 {
     public class UpdateUserRoleViewModel
     {

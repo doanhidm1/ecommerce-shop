@@ -25,13 +25,13 @@ namespace Application.Products
 
         [Required]
         public bool IsFeatured { get; set; }
-        
+
         [Required]
         public Guid CategoryId { get; set; }
 
         [Required]
         public Guid BrandId { get; set; }
-        
+
         [Required]
         public List<IFormFile> Images { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();

@@ -4,7 +4,6 @@ using Application.Categories;
 using Application.Helper;
 using Application.Products;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Shop.Controllers
 {
@@ -48,11 +47,11 @@ namespace Shop.Controllers
             return PartialView(result);
         }
 
-        public async Task <IActionResult> Detail(Guid id)
+        public async Task<IActionResult> Detail(Guid id)
         {
             var productViewModel = await _productService.GetProductDetail(id);
             // if product = null return view error in shared
-            if(productViewModel == null)
+            if (productViewModel == null)
             {
                 return PartialView("PageNotFound");
             }
