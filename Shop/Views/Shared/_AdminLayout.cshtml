@@ -40,7 +40,7 @@
     <link href="~/NiceAdmin/css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="@(roles.Count == 0 ? "toggle-sidebar" : "")">
 
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">

@@ -1,5 +1,4 @@
 using Application;
-using Application.Accounts;
 using Domain.Abstractions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;

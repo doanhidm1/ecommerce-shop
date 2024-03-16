@@ -1,9 +1,9 @@
 ﻿﻿@using Application
-@using Application.Accounts
+@using Application.Users
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Identity
 @inject RoleManager<IdentityRole> _roleManager
-@model UpdateUserRoleViewModel
+@model ManageRoleViewModel
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -15,7 +15,7 @@
     var status = data?.StatusCode ?? default;
 }
 
-<title>Edit user role(s)</title>
+<title>Edit user @Model.UserName role</title>
 
 <main id="main" class="main">
     <p hidden id="message">@message</p>
@@ -26,12 +26,12 @@
                 <div class="card-body">
                     <h5 class="card-title">Update role(s) for user @Model.UserName</h5>
                     <!-- Multi Columns Form -->
-                    <form class="row g-3" method="post" action="/User/Permission">
+                    <form class="row g-3" method="post" action="/User/ManageRole">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="UserName" />
                         <div class="col-md-6">
-                            <label asp-for="CurrentRoles" class="form-label">User Role(s)</label>
+                            <label asp-for="CurrentRoles" class="form-label">User role(s)</label>
                             <select asp-for="CurrentRoles" multiple class="form-select" aria-label="Default select example">
                                 @* for each role in allRoles, get a role as an option. If a role in Model.CurrentRoles, add checked*@
                                 @foreach (var role in allRoles)

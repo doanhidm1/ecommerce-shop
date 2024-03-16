@@ -64,7 +64,9 @@
                                         }
                                     }
                                         <td>
+                                            <a href="@Url.Action("ManageUser", "Role", new {id = role.Id})" class="btn btn-sm btn-secondary">Manage user</a>
                                             <a href="@Url.Action("Update", "Role", new {id = role.Id})" class="btn btn-sm btn-primary">Edit</a>
+
                                             <a onclick="return confirm('Are you sure you want to delete this role? The role will be removed for all users using it!')" href="@Url.Action("Delete", "Role", new {id = role.Id})" class="btn btn-sm btn-danger">Delete</a>
                                         </td>
                                     </tr>

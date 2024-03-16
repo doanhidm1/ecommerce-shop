@@ -1,5 +1,5 @@
 ﻿using Application;
-using Application.Accounts;
+using Application.Users;
 using Domain.Abstractions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -125,24 +125,6 @@ namespace Shop.Controllers
             }
         }
 
-        //public async Task<IActionResult> Update(string id)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-        //    if (user == null)
-        //    {
-        //        TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
-        //        return RedirectToAction("Index");
-        //    }
-        //    var model = new UpdateAccountViewModel
-        //    {
-        //        Id = user.Id,
-        //        UserName = user.UserName!,
-        //        Email = user.Email!,
-        //        PhoneNumber = user.PhoneNumber,
-        //    };
-        //    return View(model);
-        //}
-
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -242,7 +224,7 @@ namespace Shop.Controllers
             }
         }
 
-        public async Task<IActionResult> Permission(string id)
+        public async Task<IActionResult> ManageRole(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -251,7 +233,7 @@ namespace Shop.Controllers
                 return RedirectToAction("Index");
             }
             var userRoles = await _userManager.GetRolesAsync(user);
-            var model = new UpdateUserRoleViewModel
+            var model = new ManageRoleViewModel
             {
                 Id = user.Id,
                 UserName = user.UserName!,
@@ -262,7 +244,7 @@ namespace Shop.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Permission(UpdateUserRoleViewModel model)
+        public async Task<IActionResult> ManageRole(ManageRoleViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -284,13 +266,14 @@ namespace Shop.Controllers
                 {
                     throw new Exception("Add role(s) to user failed!");
                 }
+                await _unitOfWork.SaveChangesAsync();
                 var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(model.CurrentRoles!));
                 if (!removeRolesResult.Succeeded)
                 {
                     throw new Exception("Remove role(s) from user failed!");
                 }
-                await _userManager.UpdateSecurityStampAsync(user);
                 await _unitOfWork.SaveChangesAsync();
+                await _userManager.UpdateSecurityStampAsync(user);
                 await transaction.CommitAsync();
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Updated role(s) for user {user.UserName} successfully"));
                 return RedirectToAction("Index");

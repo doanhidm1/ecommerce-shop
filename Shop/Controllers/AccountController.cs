@@ -227,7 +227,7 @@ namespace Shop.Controllers
             var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
             if (result.Succeeded)
             {
-                await _signInManager.RefreshSignInAsync(user);
+                await _userManager.UpdateSecurityStampAsync(user);
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Confirm email change successfully!"));
                 return RedirectToAction("Login");
             }
@@ -261,6 +261,12 @@ namespace Shop.Controllers
             {
                 System.IO.File.Delete(filePath);
             }
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

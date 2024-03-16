@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Accounts
+namespace Application.Users
 {
     public class CreateUserViewModel
     {

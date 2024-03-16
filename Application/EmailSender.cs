@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 
-namespace Application.Accounts
+namespace Application
 {
     public class EmailSettings
     {
