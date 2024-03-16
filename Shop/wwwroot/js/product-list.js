@@ -24,7 +24,7 @@ var dataTable =
         model.ToPrice = toPrice;
         model.CategoryId = categoryId;
         model.Rating = rating;
-        // model.KeyWord = $('#keyword').val()
+        model.KeyWord = $('#keyword').val()
         model.SortBy = Number($('#product-order-by').val());
         model.SelectedBrandIds = [];
         $('.brand-filter:checked').each(function () {
@@ -94,6 +94,10 @@ dataTable.loadData(true);
 
 function filterproduct() {
     dataTable.loadData(true);
+    // go to table-content div
+    $('html, body').animate({
+        scrollTop: $("#tool").offset().top
+    }, 1000);
 }
 
 function changePage() {
@@ -125,6 +129,7 @@ $('body').on('change', 'input.rating-filter', function () {
 
 // $('body').on('change', '#price-min', filterproduct);
 // $('body').on('change', '#price-max', filterproduct);
+$('body').on('change', '#keyword', filterproduct);
 $('body').on('change', '#product-order-by', filterproduct);
 $('body').on('change', '#product-page-size', changePage);
 $('body').on('change', '.brand-filter', filterproduct);

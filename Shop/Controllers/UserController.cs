@@ -65,6 +65,7 @@ namespace Shop.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Invalid model state!"));
                 return RedirectToAction("CreateUser");
             }
             var checkUser = await _userManager.FindByNameAsync(model.UserName);
@@ -124,76 +125,23 @@ namespace Shop.Controllers
             }
         }
 
-        public async Task<IActionResult> Update(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
-                return RedirectToAction("Index");
-            }
-            var model = new UpdateUserViewModel
-            {
-                Id = user.Id,
-                UserName = user.UserName!,
-                Email = user.Email!,
-                PhoneNumber = user.PhoneNumber,
-            };
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update(UpdateUserViewModel model)
-        {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            if (user == null)
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
-                return RedirectToAction("Index");
-            }
-            if (!user.UserName!.Equals(model.UserName))
-            {
-                var checkUser = await _userManager.FindByNameAsync(model.UserName);
-                if (checkUser != null)
-                {
-                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "New username has been used!"));
-                    return RedirectToAction("UpdateUser", new { id = user.Id });
-                }
-                user.UserName = model.UserName;
-            }
-            user.PhoneNumber = model.PhoneNumber;
-            if (model.Avatar != null)
-            {
-                DeleteImage(user.AvatarUrl);
-                user.AvatarUrl = await SaveImage(model.Avatar);
-            }
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User update failed!"));
-                return RedirectToAction("UpdateUser", new { id = user.Id });
-            }
-            await _signInManager.RefreshSignInAsync(user);
-            if (!user.Email!.Equals(model.Email))
-            {
-                var checkUser = await _userManager.FindByEmailAsync(model.Email);
-                if (checkUser != null)
-                {
-                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Updated user, but new email has been used!"));
-                    return RedirectToAction("UpdateUser", new { id = user.Id });
-                }
-                var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.Email);
-                var sendEmailResult = await SendChangeConfirmEmail(user, model.Email, token);
-
-                if (!sendEmailResult)
-                {
-                    TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Change email failed!"));
-                    return RedirectToAction("UpdateUser", new { id = user.Id });
-                }
-            }
-            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"User '{user.UserName}' updated successfully"));
-            return RedirectToAction("Index");
-        }
+        //public async Task<IActionResult> Update(string id)
+        //{
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null)
+        //    {
+        //        TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
+        //        return RedirectToAction("Index");
+        //    }
+        //    var model = new UpdateAccountViewModel
+        //    {
+        //        Id = user.Id,
+        //        UserName = user.UserName!,
+        //        Email = user.Email!,
+        //        PhoneNumber = user.PhoneNumber,
+        //    };
+        //    return View(model);
+        //}
 
         public async Task<IActionResult> Delete(string id)
         {
@@ -266,58 +214,6 @@ namespace Shop.Controllers
             return RedirectToAction("Login");
         }
 
-        private async Task<bool> SendChangeConfirmEmail(User user, string newEmail, string token)
-        {
-            try
-            {
-                var callbackUrl = Url.Action("ConfirmChangeEmail", "Account", new { userId = user.Id, newEmail = newEmail, token = token }, protocol: HttpContext.Request.Scheme);
-                var subject = "Confirm your new email";
-                var message = $"Please confirm your new email by <a href='{callbackUrl}'>clicking here</a>.";
-                await _emailSender.SendEmailAsync(newEmail, subject, message);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token)
-        {
-            if (userId.IsNullOrEmpty() || newEmail.IsNullOrEmpty() || token.IsNullOrEmpty())
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Invalid confirm information!"));
-                return RedirectToAction("Login");
-            }
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
-                return RedirectToAction("Login");
-            }
-            if (user.Email!.Equals(newEmail))
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "New email is the same as old email!"));
-                return RedirectToAction("Login");
-            }
-            var checkUser = await _userManager.FindByEmailAsync(newEmail);
-            if (checkUser != null)
-            {
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "This email has been used!"));
-                return RedirectToAction("Login");
-            }
-            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
-            if (result.Succeeded)
-            {
-                await _signInManager.RefreshSignInAsync(user);
-                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Confirm email change successfully!"));
-                return RedirectToAction("Login");
-            }
-            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Confirm email change failed!"));
-            return RedirectToAction("Login");
-        }
-
         private async Task<string> SaveImage(IFormFile image)
         {
             string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
@@ -343,6 +239,66 @@ namespace Shop.Controllers
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
+            }
+        }
+    
+        public async Task<IActionResult> Permission(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
+                return RedirectToAction("Index");
+            }
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var model = new UpdateUserRoleViewModel
+            {
+                Id =  user.Id,
+                UserName = user.UserName!,
+                CurrentRoles = await _userManager.GetRolesAsync(user),
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Permission(UpdateUserRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Invalid model state!"));
+                return RedirectToAction("Index");
+            }
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
+                return RedirectToAction("Index");
+            }
+            var userRoles = await _userManager.GetRolesAsync(user);
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try { 
+                var addRolesResult = await _userManager.AddToRolesAsync(user, model.CurrentRoles!.Except(userRoles));
+                if (!addRolesResult.Succeeded)
+                {
+                    throw new Exception("Add role(s) to user failed!");
+                }
+                var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(model.CurrentRoles!));
+                if (!removeRolesResult.Succeeded)
+                {
+                    throw new Exception("Remove role(s) from user failed!");
+                }
+                await _userManager.UpdateSecurityStampAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync();
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Updated role(s) for user {user.UserName} successfully"));
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Update role(s) for user failed!"));
+                return RedirectToAction("Index");
             }
         }
     }

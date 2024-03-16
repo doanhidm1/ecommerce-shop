@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Accounts
 {
-    public class UpdateUserViewModel
+    public class UpdateAccountViewModel
     {
         [Required]
         public string Id { get; set; }
@@ -25,6 +25,5 @@ namespace Application.Accounts
         public string? PhoneNumber { get; set; }
 
         public IFormFile? Avatar { get; set; }
-
     }
 }

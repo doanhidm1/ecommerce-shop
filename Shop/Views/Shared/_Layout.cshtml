@@ -67,7 +67,7 @@
                                             </div><!-- End .header-menu -->
                                         </div>
                                     </li>
-                                    <li><a href="#" data-toggle="modal">Sign in / Sign up</a></li>
+                                    <li><a href="#signin-modal" data-toggle="modal">Sign in / Sign up</a></li>
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
@@ -93,14 +93,14 @@
                     <div class="header-center">
                         <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
                             <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
+                            <div>
                                 <div class="header-search-wrapper search-wrapper-wide">
                                     <label for="q" class="sr-only">Search</label>
-                                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                                    <input type="search" class="form-control" name="q" id="q"
+                                    <button class="btn btn-primary" type="button"><i class="icon-search"></i></button>
+                                    <input type="search" class="form-control" name="q" id="keyword"
                                         placeholder="Search product ..." required>
                                 </div><!-- End .header-search-wrapper -->
-                            </form>
+                            </div>
                         </div><!-- End .header-search -->
                     </div>
 
@@ -188,10 +188,10 @@
 
                     <div class="header-center">
                         <nav class="main-nav">
-                            <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
-                                    <a href="/" class="sf-with-ul">Home</a>
-
+                            <ul class="menu sf-arrows active">
+                                <li class="">
+                                    <a href="/" class="">Home</a>
+@* 
                                     <div class="megamenu demo">
                                         <div class="menu-col">
                                             <div class="menu-title">Choose your demo</div><!-- End .menu-title -->
@@ -400,10 +400,10 @@
                                             </div><!-- End .text-center -->
                                         </div><!-- End .menu-col -->
                                     </div><!-- End .megamenu -->
-                                </li>
+ *@                                </li>
                                 <li>
-                                    <a href="#" class="sf-with-ul">Shop</a>
-
+                                    <a href="~/product" class="">Shop</a>
+@* 
                                     <div class="megamenu megamenu-md">
                                         <div class="row no-gutters">
                                             <div class="col-md-8">
@@ -480,10 +480,10 @@
                                             </div><!-- End .col-md-4 -->
                                         </div><!-- End .row -->
                                     </div><!-- End .megamenu megamenu-md -->
-                                </li>
+   *@                              </li>
                                 <li>
-                                    <a href="/product" class="sf-with-ul">Product</a>
-
+                                    <a href="/product" class="l">Product</a>
+@* 
                                     <div class="megamenu megamenu-sm">
                                         <div class="row no-gutters">
                                             <div class="col-md-6">
@@ -522,11 +522,11 @@
                                             </div><!-- End .col-md-6 -->
                                         </div><!-- End .row -->
                                     </div><!-- End .megamenu megamenu-sm -->
-                                </li>
+   *@                              </li>
                                 <li>
-                                    <a href="#" class="sf-with-ul">Pages</a>
+                                    <a href="~/wishlist" class="">Wishlist</a>
 
-                                    <ul>
+                                    @* <ul>
                                         <li>
                                             <a href="#" class="sf-with-ul">About</a>
 
@@ -547,12 +547,12 @@
                                         <li><a href="/pages/faq">FAQs</a></li>
                                         <li><a href="/ErrorCode/404">Error 404</a></li>
                                         <li><a href="#">Coming Soon</a></li>
-                                    </ul>
+                                    </ul> *@
                                 </li>
                                 <li>
-                                    <a href="#" class="sf-with-ul">Blog</a>
+                                    <a href="~/cart" class="">Cart</a>
 
-                                    <ul>
+                                    @* <ul>
                                         <li><a href="#">Classic</a></li>
                                         <li><a href="#">Listing</a></li>
                                         <li>
@@ -590,12 +590,12 @@
                                                         sidebar</a></li>
                                             </ul>
                                         </li>
-                                    </ul>
+                                    </ul> *@
                                 </li>
                                 <li>
-                                    <a href="#" class="sf-with-ul">Elements</a>
+                                    <a href="~/checkout" class="">Checkout</a>
 
-                                    <ul>
+                                    @* <ul>
                                         <li><a href="#">Products</a></li>
                                         <li><a href="#">Typography</a></li>
                                         <li><a href="#">Titles</a></li>
@@ -610,16 +610,15 @@
                                         <li><a href="#">Portfolio</a></li>
                                         <li><a href="#">Call to Action</a></li>
                                         <li><a href="#">Icon Boxes</a></li>
-                                    </ul>
+                                    </ul> *@
                                 </li>
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-center -->
-
-                    <div class="header-right">
-                       @*  <i class="la la-lightbulb-o"></i>
-                        <p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p> *@
-                    </div>
+                    @* <div class="header-right">
+                        <i class="la la-lightbulb-o"></i>
+                        <p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p>
+                    </div> *@
                 </div><!-- End .container -->
             </div><!-- End .header-bottom -->
         </header><!-- End .header -->
@@ -963,36 +962,36 @@
                             <div class="tab-content" id="tab-content-5">
                                 <div class="tab-pane fade show active" id="signin" role="tabpanel"
                                     aria-labelledby="signin-tab">
-                                    <form action="#">
+                                    <form action="/account/login" method="post">
+                                        @Html.AntiForgeryToken()
                                         <div class="form-group">
-                                            <label for="singin-email">Username or email address *</label>
-                                            <input type="text" class="form-control" id="singin-email"
-                                                name="singin-email" required>
+                                            <label for="EmailOrUsername">Username or email address *</label>
+                                            <input type="text" class="form-control" id="EmailOrUsername"
+                                                   name="EmailOrUsername" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-group">
-                                            <label for="singin-password">Password *</label>
-                                            <input type="password" class="form-control" id="singin-password"
-                                                name="singin-password" required>
+                                            <label for="Password">Password *</label>
+                                            <input type="password" class="form-control" id="Password"
+                                                   name="Password" required>
                                         </div><!-- End .form-group -->
 
-                                        <div class="form-footer">
+                                        <div class="form-footer" style="padding-bottom: 0; border-bottom: 0; margin-bottom:0">
                                             <button type="submit" class="btn btn-outline-primary-2">
                                                 <span>LOG IN</span>
                                                 <i class="icon-long-arrow-right"></i>
                                             </button>
 
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input"
-                                                    id="signin-remember">
-                                                <label class="custom-control-label" for="signin-remember">Remember
-                                                    Me</label>
+                                                <input value="true" type="checkbox" class="custom-control-input"
+                                                       id="RememberMe" name="RememberMe">
+                                                <label class="custom-control-label" for="RememberMe">Remember Me</label>
                                             </div><!-- End .custom-checkbox -->
 
                                             <a href="#" class="forgot-link">Forgot Your Password?</a>
                                         </div><!-- End .form-footer -->
                                     </form>
-                                    <div class="form-choice">
+                                    @* <div class="form-choice">
                                         <p class="text-center">or sign in with</p>
                                         <div class="row">
                                             <div class="col-sm-6">
@@ -1008,7 +1007,7 @@
                                                 </a>
                                             </div><!-- End .col-6 -->
                                         </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
+                                    </div><!-- End .form-choice --> *@
                                 </div><!-- .End .tab-pane -->
                                 <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
                                     <form action="#">
@@ -1024,7 +1023,7 @@
                                                 name="register-password" required>
                                         </div><!-- End .form-group -->
 
-                                        <div class="form-footer">
+                                        <div class="form-footer" style="padding-bottom: 0; border-bottom: 0; margin-bottom:0">
                                             <button type="submit" class="btn btn-outline-primary-2">
                                                 <span>SIGN UP</span>
                                                 <i class="icon-long-arrow-right"></i>
@@ -1034,11 +1033,11 @@
                                                 <input type="checkbox" class="custom-control-input" id="register-policy"
                                                     required>
                                                 <label class="custom-control-label" for="register-policy">I agree to the
-                                                    <a href="#">privacy policy</a> *</label>
+                                                    <a href="~/pages/faq">privacy policy</a> *</label>
                                             </div><!-- End .custom-checkbox -->
                                         </div><!-- End .form-footer -->
                                     </form>
-                                    <div class="form-choice">
+                                    @* <div class="form-choice">
                                         <p class="text-center">or sign in with</p>
                                         <div class="row">
                                             <div class="col-sm-6">
@@ -1054,7 +1053,7 @@
                                                 </a>
                                             </div><!-- End .col-6 -->
                                         </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
+                                    </div><!-- End .form-choice --> *@
                                 </div><!-- .End .tab-pane -->
                             </div><!-- End .tab-content -->
                         </div><!-- End .form-tab -->

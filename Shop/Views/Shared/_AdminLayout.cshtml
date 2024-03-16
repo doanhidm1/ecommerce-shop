@@ -220,36 +220,16 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>@(user != null ? user.Email : "Default")</h6>
-                            <span>Role(s): @(roles != null ? string.Join(", ", roles) : "Default")</span>
+                            <span>Role(s): @(roles != null ? string.Join(", ", roles) : "None")</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
+                            <a class="dropdown-item d-flex align-items-center" href="~/account/profile">
                                 <i class="bi bi-person"></i>
                                 <span>My Profile</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-gear"></i>
-                                <span>Account Settings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-question-circle"></i>
-                                <span>Need Help?</span>
                             </a>
                         </li>
                         <li>
