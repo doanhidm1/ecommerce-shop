@@ -6,13 +6,13 @@
         public string ProductName { get; set; }
         public DateTime CreatedDate { get; set; }
         public int Stock { get; set; }
-        public Guid? CategoryId { get; set; }
-        public Guid? BrandId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid BrandId { get; set; }
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
         public bool IsFeatured { get; set; }
-        public string? Detail { get; set; }
-        public string? Description { get; set; }
+        public string Detail { get; set; }
+        public string Description { get; set; }
         public List<ImageViewModel> Images { get; set; } = new();
         public List<ReviewViewModel> Reviews { get; set; } = new();
         public int ReviewCount { get; set; }

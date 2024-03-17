@@ -1,0 +1,110 @@
+﻿﻿@using Application;
+@using Application.Brands
+@using Application.Categories
+@using Application.Products
+@using Newtonsoft.Json;
+@model ProductUpdateViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var pagemodel = ViewBag.Data as ProductListingPageModel;
+    var categories = pagemodel?.Categories ?? new List<CategoryViewModel>();
+    var brands = pagemodel?.Brands ?? new List<BrandViewModel>();
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Update Product</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update product @Model.ProductName</h5>
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3" method="post" action="/adminproduct/update">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ProductId" />
+                        <div class="col-md-6">
+                            <label asp-for="ProductName" class="form-label">Product name*</label>
+                            <input asp-for="ProductName" type="text" class="form-control">
+                        </div>
+@*                         <div class="col-md-4">
+                            <label for="Images" class="form-label">Product images*</label>
+                            <input name="Images" multiple accept="image/*" class="form-control" type="file" id="Images">
+                        </div> *@
+
+                        
+
+                        <div class="col-md-6">
+                            <label asp-for="BrandId" class="form-label">Brand*</label>
+                            <select asp-for="BrandId" class="form-select" aria-label="Default select example">
+                                @foreach (var brand in brands)
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                })
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Price" class="form-label">Price*</label>
+                            <input asp-for="Price" type="number" class="form-control">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="DiscountPrice" class="form-label">Discount price</label>
+                            <input asp-for="DiscountPrice" type="number" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label">Category*</label>
+                            <select asp-for="CategoryId" class="form-select" aria-label="Default select example">
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                })
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Quantity" class="form-label">Stock*</label>
+                            <input asp-for="Quantity" type="number" class="form-control" >
+                        </div>
+
+                        <div class="col-md-6 pt-4" style="text-align: center">
+                            <input value="true" asp-for="IsFeatured" class="form-check-input" type="checkbox">
+                            <label class="form-check-label" asp-for="IsFeatured">
+                                Featured
+                            </label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Description" class="form-label">Description*</label>
+                            <textarea asp-for="Description" class="form-control" style="height: 100px"></textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Detail" class="form-label">Detail*</label>
+                            <textarea asp-for="Detail" class="form-control" style="height: 100px"></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button id="btn-create-product" type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+@section Scripts {
+    <script src="~/NiceAdmin/js/result.js"></script>
+}
+

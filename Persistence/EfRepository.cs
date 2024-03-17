@@ -12,14 +12,14 @@ namespace Persistence
             _context = context;
         }
 
-        public void Add(TEntity entity)
+        public async Task Add(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+            await _context.Set<TEntity>().AddAsync(entity);
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
+            await Task.Run(() => _context.Set<TEntity>().Remove(entity));
         }
 
         public IQueryable<TEntity> GetAll()
@@ -32,9 +32,9 @@ namespace Persistence
             return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public void Update(TEntity entity)
+        public async Task Update(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
+            await Task.Run(() => _context.Set<TEntity>().Update(entity));
         }
     }
 }

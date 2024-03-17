@@ -43,7 +43,7 @@ namespace Application.Checkout
                     Status = Domain.Enums.EntityStatus.Active,
 
                 };
-                _billRepository.Add(bill);
+                await _billRepository.Add(bill);
                 await _unitOfWork.SaveChangesAsync();
                 foreach (var item in model.BillDetails)
                 {
@@ -57,7 +57,7 @@ namespace Application.Checkout
                         UnitPrice = item.Price,
                         Quantity = item.Quantity,
                     };
-                    _billDetailRepository.Add(billDetail);
+                    await _billDetailRepository.Add(billDetail);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 await transaction.CommitAsync();

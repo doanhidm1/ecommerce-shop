@@ -11,6 +11,7 @@ namespace Application.Products
         Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
         Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId);
         Task CreateProduct(ProductCreateViewModel model);
+        Task UpdateProduct(ProductUpdateViewModel model);
         Task DeleteProduct(Guid productId);
     }
 
@@ -260,7 +261,7 @@ namespace Application.Products
                     CreatedDate = DateTime.Now,
                     Status = Domain.Enums.EntityStatus.Active,
                 };
-                _productRepository.Add(product);
+                await _productRepository.Add(product);
                 await _unitOfWork.SaveChangesAsync();
                 foreach (var item in model.ImageUrls)
                 {
@@ -274,7 +275,7 @@ namespace Application.Products
                         Alt = product.Name
 
                     };
-                    _imageRepository.Add(image);
+                    await _imageRepository.Add(image);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 await transaction.CommitAsync();
@@ -285,6 +286,27 @@ namespace Application.Products
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task UpdateProduct(ProductUpdateViewModel model)
+        {
+            var product = await _productRepository.FindById(model.ProductId);
+            if (product == null)
+            {
+                throw new Exception("Product not found");
+            }
+            product.Name = model.ProductName;
+            product.Description = model.Description;
+            product.Detail = model.Detail;
+            product.Price = model.Price;
+            product.DiscountPrice = model.DiscountPrice;
+            product.Quantity = model.Quantity;
+            product.CategoryId = model.CategoryId;
+            product.BrandId = model.BrandId;
+            product.IsFeatured = model.IsFeatured;
+            await _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
 
         public async Task DeleteProduct(Guid productId)
         {
@@ -300,18 +322,18 @@ namespace Application.Products
                 var productImages = await _imageRepository.GetAll().Where(s => s.ProductId == productId).ToListAsync();
                 foreach (var item in productImages)
                 {
-                    _imageRepository.Delete(item);
+                    await _imageRepository.Delete(item);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 // delete product reviews
                 var productReviews = await _reviewRepository.GetAll().Where(s => s.ProductId == productId).ToListAsync();
                 foreach (var item in productReviews)
                 {
-                    _reviewRepository.Delete(item);
+                    await _reviewRepository.Delete(item);
                     await _unitOfWork.SaveChangesAsync();
                 }
                 // delete product
-                _productRepository.Delete(product);
+                await _productRepository.Delete(product);
                 await _unitOfWork.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

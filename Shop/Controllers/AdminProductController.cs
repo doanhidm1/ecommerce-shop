@@ -119,7 +119,59 @@ namespace Shop.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteProduct(Guid id)
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var product = await _productService.GetProductDetail(id);
+            if (product == null)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product not found!"));
+                return RedirectToAction("Index");
+            }
+            var model = new ProductUpdateViewModel
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Price = product.Price,
+                DiscountPrice = product.DiscountPrice,
+                Quantity = product.Stock,
+                Detail = product.Detail,
+                Description = product.Description,
+                IsFeatured = product.IsFeatured,
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+            };
+            var pageModel = new ProductListingPageModel
+            {
+                Categories = _categoryService.GetCategories(),
+                Brands = _brandService.GetBrands(),
+            };
+            ViewBag.Data = pageModel;
+            return View(model);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Update(ProductUpdateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Update product data invalided!"));
+                return RedirectToAction("Update", new { id = model.ProductId });
+            }
+            try
+            {
+                await _productService.UpdateProduct(model);
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Updated {model.ProductName} successfully"));
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, $"Update product failed!"));
+                return RedirectToAction("Update", new { id = model.ProductId });
+            }
+        }
+
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
