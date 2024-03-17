@@ -6,7 +6,7 @@ namespace Application.Products
 {
     public interface IProductService
     {
-        GenericData<ProductViewModel> GetProducts(ProductPage model);
+        Task<GenericData<ProductViewModel>> GetProducts(ProductPage model);
         Task<ProductDetailViewModel> GetProductDetail(Guid productId);
         Task<CartItemViewModel> GetProductDetailForCart(Guid productId);
         Task<WishlistItemViewModel> GetProductDetailForWishlist(Guid productId);
@@ -35,7 +35,7 @@ namespace Application.Products
             _unitOfWork = unitOfWork;
         }
 
-        public GenericData<ProductViewModel> GetProducts(ProductPage filter)
+        public async Task<GenericData<ProductViewModel>> GetProducts(ProductPage filter)
         {
             var data = new GenericData<ProductViewModel>();
             var products = _productRepository.GetAll();
@@ -119,7 +119,7 @@ namespace Application.Products
             }
             else
             {
-                productViewModels = result.Skip(filter.SkipNumber).Take(filter.PageSize).ToList();
+                productViewModels = await result.Skip(filter.SkipNumber).Take(filter.PageSize).ToListAsync();
             }
 
             foreach (var productView in productViewModels)

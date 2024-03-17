@@ -33,23 +33,23 @@ namespace Shop.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var model = new ProductListingPageModel
             {
-                Categories = _categoryService.GetCategories(),
-                Brands = _brandService.GetBrands(),
+                Categories = await _categoryService.GetCategories(),
+                Brands =  await _brandService.GetBrands(),
                 OrderBys = EnumHelper.GetList(typeof(SortEnum))
             };
             return View(model);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new ProductListingPageModel
             {
-                Categories = _categoryService.GetCategories(),
-                Brands = _brandService.GetBrands(),
+                Categories = await _categoryService.GetCategories(),
+                Brands = await _brandService.GetBrands(),
             };
             return View(model);
         }
@@ -77,9 +77,9 @@ namespace Shop.Controllers
             }
         }
 
-        public IActionResult ProductListPartial([FromBody] ProductPage model)
+        public async Task<IActionResult> ProductListPartial([FromBody] ProductPage model)
         {
-            var result = _productService.GetProducts(model);
+            var result = await _productService.GetProducts(model);
             return PartialView(result);
         }
 
@@ -142,8 +142,8 @@ namespace Shop.Controllers
             };
             var pageModel = new ProductListingPageModel
             {
-                Categories = _categoryService.GetCategories(),
-                Brands = _brandService.GetBrands(),
+                Categories = await _categoryService.GetCategories(),
+                Brands = await _brandService.GetBrands(),
             };
             ViewBag.Data = pageModel;
             return View(model);

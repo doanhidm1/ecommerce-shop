@@ -47,18 +47,7 @@ namespace Application.Checkout
                 await _unitOfWork.SaveChangesAsync();
                 foreach (var item in model.BillDetails)
                 {
-                    var billDetail = new BillDetail
-                    {
-                        Id = Guid.NewGuid(),
-                        BillId = bill.Id,
-                        CreatedDate = bill.CreatedDate,
-                        Status = Domain.Enums.EntityStatus.Active,
-                        ProductName = item.ProductName,
-                        UnitPrice = item.Price,
-                        Quantity = item.Quantity,
-                    };
-                    await _billDetailRepository.Add(billDetail);
-                    await _unitOfWork.SaveChangesAsync();
+                    await CreateBillDetail(bill, item);
                 }
                 await transaction.CommitAsync();
             }
@@ -67,6 +56,22 @@ namespace Application.Checkout
                 await transaction.RollbackAsync();
                 throw ex;
             }
+        }
+
+        private async Task CreateBillDetail(Bill bill, BillDetailCreateViewModel item)
+        {
+            var billDetail = new BillDetail
+            {
+                Id = Guid.NewGuid(),
+                BillId = bill.Id,
+                CreatedDate = bill.CreatedDate,
+                Status = Domain.Enums.EntityStatus.Active,
+                ProductName = item.ProductName,
+                UnitPrice = item.Price,
+                Quantity = item.Quantity,
+            };
+            await _billDetailRepository.Add(billDetail);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
