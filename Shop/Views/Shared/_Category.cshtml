@@ -1,0 +1,40 @@
+﻿@using Application.Categories;
+@model List<CategoryViewModel>
+<!-- define a style -->
+<style>
+    .selected-category {
+        border-style: solid;
+        border-color: gray;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="cat-blocks-container">
+    <div class="row">
+        <div class="col-6 col-md-4 col-lg-3">
+            <a class="cat-block category-id" id="">
+                <figure>
+                    <span>
+                        <img src="https://cdn-icons-png.freepik.com/64/6781/6781200.png" alt="no alt">
+                    </span>
+                </figure>
+
+                <h3 class="cat-block-title">All (@Model.Sum(s => s.ProductCount))</h3><!-- End .cat-block-title -->
+            </a>
+        </div>
+        @foreach(var item in Model)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                <a class="cat-block category-id" id="@item.Id">
+                    <figure>
+                        <span>
+                            <img src="@item.Image" alt="@item.Name">
+                        </span>
+                    </figure>
+
+                    <h3 class="cat-block-title">@item.Name (@item.ProductCount)</h3><!-- End .cat-block-title -->
+                </a>
+            </div>
+        }
+    </div><!-- End .row -->
+</div><!-- End .cat-blocks-container -->

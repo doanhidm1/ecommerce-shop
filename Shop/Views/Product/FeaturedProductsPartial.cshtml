@@ -1,0 +1,66 @@
+﻿@using Application;
+@using Application.Products;
+@model GenericData<ProductViewModel>
+
+
+@foreach (var item in Model.Data)
+{
+    <div class="owl-item active" style="width: 217.6px; margin-right: 20px;">
+        <div class="product">
+            <figure class="product-media">
+                @if (item.IsFeatured)
+                {
+                    <span class="product-label label-top">Top</span>
+                }
+                @if (item.CreatedDate > DateTime.Now.AddMonths(-1))
+                {
+                    <span class="product-label label-new">New</span>
+                }
+                @if (item.DiscountPrice > 0 && item.DiscountPrice < item.Price)
+                {
+                    <span class="product-label label-sale">
+                        - @Math.Floor((1 - (decimal)item.DiscountPrice / item.Price) * 100) %
+                    </span>
+                }
+                <a href="/product/detail?id=@item.ProductId">
+                    <img src="@item.ImageUrl" alt="@item.ImageAlt" class="product-image">
+                </a>
+
+                <div class="product-action-vertical">
+                    <a href="#" product-id="@item.ProductId" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                    <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
+                    <a href="#" product-id="@item.ProductId" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                </div><!-- End .product-action-vertical -->
+
+                <div class="product-action">
+                    <a href="#"qty="1" product-id="@item.ProductId" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+                </div><!-- End .product-action -->
+            </figure><!-- End .product-media -->
+
+            <div class="product-body">
+                <h3 class="product-title"><a href="/product/detail?id=@item.ProductId">@item.ProductName</a></h3><!-- End .product-title -->
+                <div class="product-price">
+                    @if (item.DiscountPrice > 0 && item.DiscountPrice < item.Price)
+                    {
+                        <span class="new-price">@item.DiscountPrice ₫</span>
+                        <span class="old-price"><del>@item.Price ₫</del></span>
+                    }
+                    else
+                    {
+                        <span class="price">@item.Price ₫</span>
+                    }
+                </div><!-- End .product-price -->
+                @if (item.ReviewCount > 0 && item.Rating > 0 && item.Rating <= 5)
+                {
+                    <div class="ratings-container">
+                        <div class="ratings">
+                            <div class="ratings-val" style="width: @(item.Rating / 5d * 100d)%;"></div><!-- End .ratings-val -->
+                        </div><!-- End .ratings -->
+                        <span class="ratings-text">( @item.ReviewCount Reviews )</span>
+                    </div>
+                    <!-- End .rating-container -->
+                }
+            </div><!-- End .product-body -->
+        </div>
+    </div>
+}

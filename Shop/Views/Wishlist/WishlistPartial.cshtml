@@ -1,0 +1,69 @@
+﻿@namespace Application.Products
+@model List<WishlistItemViewModel>
+
+<span hidden id="wishlist-count">@Model.Count</span>
+@if (Model.Any())
+{
+    <div class="container">
+        <table style="text-align: center" class="table table-wishlist table-mobile">
+            <thead >
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="product-col">
+                            <div class="product" style="justify-content: center">
+                                <figure class="product-media">
+                                    <a href="/product/detail/?id=@item.ProductId">
+                                        <img src="@item.Image" alt="@item.Alt">
+                                    </a>
+                                </figure>
+
+                                <h3 class="product-title">
+                                    <a href="/product/detail/?id=@item.ProductId">@item.ProductName</a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="price-col">$@item.Price</td>
+                        @if (item.Stock > 0)
+                        {
+                            <td class="stock-col"><span class="in-stock">In stock</span></td>
+                            <td class="action-col">
+                                <button qty="1" product-id="@item.ProductId" class="btn-cart btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
+                            <td class="action-col">
+                                <button class="btn btn-block btn-outline-primary-2 disabled">Out of Stock</button>
+                            </td>
+                        }
+                        <td class="remove-col"><button product-id="@item.ProductId" product-name="@item.ProductName" class="btn-remove btn-remove-wl"><i class="icon-close"></i></button></td>
+                    </tr>
+                }
+            </tbody>
+        </table><!-- End .table table-wishlist -->
+    </div>
+
+    <!-- End .container -->
+}
+else
+{
+    <div class="ml-5 mr-5" style="background-color: white; text-align:center; align-content: center; height: 500px; border-radius: 8px">
+        <div>
+            <div>
+                <h1>You haven't added any items to your wishlist yet.</h1>
+            </div>
+            @Html.ActionLink("Go add some!", "Index", "Product", new { area = "" }, new { @class = "btn btn-primary mt-3 rounded" })
+        </div>
+    </div>
+}

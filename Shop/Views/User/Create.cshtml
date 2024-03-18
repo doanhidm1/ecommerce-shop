@@ -1,0 +1,83 @@
+﻿﻿@using Application
+@using Microsoft.AspNetCore.Identity
+@using Newtonsoft.Json
+@model List<IdentityRole>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Create User</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Create new user</h5>
+                    <!-- Multi Columns Form -->
+                    <form id="create-user-form" class="row g-3" enctype="multipart/form-data" method="post" action="/User/Create">
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-6">
+                            <div class="row-6 mb-3">
+                                <label for="UserName" class="form-label">Username*</label>
+                                <input name="UserName" type="text" class="form-control" id="UserName">
+                            </div>
+
+                            <div class="row-6">
+                                <label for="Avatar" class="form-label">User Avatar*</label>
+                                <input name="Avatar" accept="image/*" class="form-control" type="file" id="Avatar">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Roles" class="form-label">Role(s)*</label>
+                            <select name="Roles" multiple id="Roles" class="form-select" aria-label="Default select example">
+                                @foreach (var role in Model)
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                })
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Email" class="form-label">Email*</label>
+                            <input name="Email" class="form-control" type="email" id="Email">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Password" class="form-label">Password*</label>
+                            <input name="Password" type="password" class="form-control" id="Password">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input name="PhoneNumber" type="tel" id="PhoneNumber" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="ConfirmPassword" class="form-label">Confirm Password*</label>
+                            <input name="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword">
+                        </div>
+
+                        <div class="text-center">
+                            <button disabled id="btn-create-user" type="button" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+@section Scripts {
+    <script src="~/NiceAdmin/js/create-user.js"></script>
+    <script src="/NiceAdmin/js/result.js"></script>
+}

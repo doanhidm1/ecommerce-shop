@@ -1,0 +1,128 @@
+@using Application.Products;
+@model ProductListingPageModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/molla/assets/css/plugins/nouislider/nouislider.css">
+    <link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-13.css">
+    <link rel="stylesheet" href="~/molla/assets/css/demos/demo-13.css">
+}
+
+<title>Products</title>
+
+@* <p id="txt-categoryId" hidden>@Model.CategoryId</p>
+<p id="txt-keyword" hidden>@Model.KeyWord</p>*@
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        @* <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Electronics</li>
+            </ol>
+        </div><!-- End .container --> *@
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-xl-4-5col">
+
+                    <h2 class="title title-border">Featured Items</h2><!-- End .title -->
+
+                    <div class="owl-carousel owl-simple owl-nav-top carousel-equal-height carousel-with-shadow owl-loaded owl-drag" data-toggle="owl" data-owl-options="{
+                                    &quot;nav&quot;: true,
+                                    &quot;dots&quot;: false,
+                                    &quot;margin&quot;: 20,
+                                    &quot;loop&quot;: false,
+                                    &quot;responsive&quot;: {
+                                        &quot;0&quot;: {
+                                            &quot;items&quot;:2
+                                        },
+                                        &quot;480&quot;: {
+                                            &quot;items&quot;:2
+                                        },
+                                        &quot;768&quot;: {
+                                            &quot;items&quot;:3
+                                        },
+                                        &quot;1200&quot;: {
+                                            &quot;items&quot;:4
+                                        }
+                                    }
+                                }">
+                        <!-- End .product -->
+                        <!-- End .product -->
+                        <!-- End .product -->
+                        <!-- End .product -->
+                        <!-- End .product -->
+                        <div class="owl-stage-outer">
+                            <div id="featured-product" class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all 0s ease 0s; width: 1188px;">
+                            </div>
+                        </div><div class="owl-nav"><button type="button" role="presentation" class="owl-prev disabled"><i class="icon-angle-left"></i></button><button type="button" role="presentation" class="owl-next"><i class="icon-angle-right"></i></button></div><div class="owl-dots disabled"></div>
+                    </div>
+
+                    <div class="mb-2"></div><!-- End .mb-2 -->
+
+                    <h2 class="title title-border">All categories</h2><!-- End .title -->
+                    @await Html.PartialAsync("_Category", Model.Categories)
+
+                    <div class="mb-2"></div><!-- End .mb-4 -->
+
+                    <div class="toolbox" id="tool">
+                        <div class="toolbox-left">
+                            <div class="toolbox-info" id="count">
+                            </div><!-- End .toolbox-info -->
+                        </div><!-- End .toolbox-left -->
+
+                        <div class="toolbox-right">
+                            <div class="toolbox-sort">
+                                <label for="sortby">Sort by:</label>
+                                <div class="select-custom">
+                                    <select name="sortby" class="form-control" id="product-order-by">
+                                        @foreach (var item in Model.OrderBys)
+                                        {
+                                            <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div><!-- End .toolbox-sort -->
+                        </div><!-- End .toolbox-right -->
+                    </div><!-- End .toolbox -->
+
+                    <div class="products mb-1">
+                        <div class="row" id="table-content">
+                        </div><!-- End .row -->
+                    </div><!-- End .products -->
+                    <div class="d-flex justify-content-center" id="pagination"></div>
+                </div>
+                @await Html.PartialAsync("_Sidebar", Model.Brands)
+
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+
+    <div class="cta cta-horizontal cta-horizontal-box bg-primary">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5">
+                    <h3 class="cta-title text-white">Join Our Newsletter</h3><!-- End .cta-title -->
+                    <p class="cta-desc text-white">Subcribe to get information about products and coupons</p><!-- End .cta-desc -->
+                </div><!-- End .col-lg-5 -->
+
+                <div class="col-lg-7">
+                    <form action="#">
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-white" placeholder="Enter your Email Address" aria-label="Email Adress" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-white-2" type="submit"><span>Subscribe</span><i class="icon-long-arrow-right"></i></button>
+                            </div><!-- .End .input-group-append -->
+                        </div><!-- .End .input-group -->
+                    </form>
+                </div><!-- End .col-lg-7 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .cta -->
+</main><!-- End .main -->
+@section Scripts {
+    <script src="~/js/twb-pgination.js"></script>
+    <script src="~/js/product-list.js"></script>
+}

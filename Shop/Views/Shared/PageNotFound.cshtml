@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "404";
+}
+
+@if (ViewBag.IsPopup == null)
+{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-4.css">
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+}
+
+@* <div class="ml-5 mr-5" style="background-color: white; text-align:center; align-content: center; height: 500px; border-radius: 8px">
+    <div>
+        <div>
+            <h1>We're sorry, but the page you requested could not be found.</h1>
+        </div>
+        @if (ViewBag.IsPopup == null)
+        {
+            @Html.ActionLink("Back to Home", "Index", "Home", new { area = "" }, new { @class = "btn btn-primary mt-3" })
+        }
+    </div>
+</div> *@
+
+
+<main class="main">
+    <div class="error-content text-center" style="background-image: url(/molla/assets/images/backgrounds/error-bg.jpg)">
+        <div class="container">
+            <h3 class="mb-3">We are sorry, the page you've requested is not available.</h3>
+            @if (ViewBag.IsPopup == null)
+            {
+                <a href="/home/" class="btn btn-outline-primary-2 btn-minwidth-lg">
+                    <span>BACK TO HOMEPAGE</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            }
+        </div><!-- End .container -->
+    </div><!-- End .error-content text-center -->
+</main><!-- End .main -->

@@ -1,0 +1,176 @@
+﻿@using Application.Brands;
+@model List<BrandViewModel>
+<aside class="col-lg-3 col-xl-5col order-lg-first">
+    <div class="widget widget-banner-sidebar mt-1">
+        <div class="banner-sidebar banner-overlay">
+            <a href="#">
+                <img src="~/molla/assets/images/demos/demo-13/banners/banner-6.jpg" alt="banner">
+            </a>
+        </div><!-- End .banner-ad -->
+    </div><!-- End .widget -->
+    <div class="widget mt-11">
+        <h3 class="widget-title">Brands</h3><!-- End .widget-title -->
+
+        <div class="widget-body">
+            <div class="filter-items">
+                @foreach (var item in Model)
+                {
+                    <div class="filter-item">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input brand-filter" id="@item.Id">
+                            <label class="custom-control-label" for="@item.Id">@item.Name (@item.ProductCount)</label>
+                        </div><!-- End .custom-checkbox -->
+                    </div>
+                    <!-- End .filter-item -->
+                }
+            </div><!-- End .filter-items -->
+        </div><!-- End .widget-body -->
+    </div><!-- End .widget -->
+
+    <div class="widget">
+        <h3 class="widget-title">Price</h3><!-- End .widget-title -->
+
+        <div class="widget-body">
+            <div class="filter-items">
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" id="price-all">
+                        <label class="custom-control-label" for="price-all">All</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" price-max=250 id="price-1">
+                        <label class="custom-control-label" for="price-1">Under 250</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" price-max=500 price-min=250 id="price-2">
+                        <label class="custom-control-label" for="price-2">250 to 500</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" price-min=500 price-max=1000 id="price-3">
+                        <label class="custom-control-label" for="price-3">500 to 1000</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" price-min=1000 price-max=2000 id="price-4">
+                        <label class="custom-control-label" for="price-4">1000 to 2000</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-radio">
+                        <input name="price-range" type="radio" class="custom-control-input price-filter" id="price-5" price-min=2000>
+                        <label class="custom-control-label" for="price-5">2000 & Above</label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+            </div><!-- End .filter-items -->
+        </div><!-- End .widget-body -->
+    </div><!-- End .widget -->
+
+    <div class="widget">
+        <h3 class="widget-title">Customer Rating</h3><!-- End .widget-title -->
+
+        <div class="widget-body">
+            <div class="filter-items">
+                <div class="filter-item">
+                    <div class="custom-control custom-checkbox">
+                        <input rating="5" type="checkbox" class="rating-filter custom-control-input" id="cus-rating-1">
+                        <label class="custom-control-label" for="cus-rating-1">
+                            <span class="ratings-container ml-4">
+                                <span class="ratings ml-2">
+                                    <span class="ratings-val" style="width: 100%;"></span><!-- End .ratings-val -->
+                                </span><!-- End .ratings -->
+                            </span><!-- End .rating-container -->
+                        </label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-checkbox">
+
+                        <input rating="4" type="checkbox" class="rating-filter custom-control-input" id="cus-rating-2">
+                        <label class="custom-control-label" for="cus-rating-2">
+                            <span class="ratings-container">
+                                <span class="mr-2">>=</span>
+                                <span class="ratings">
+                                    <span class="ratings-val" style="width: 80%;"></span><!-- End .ratings-val -->
+                                </span><!-- End .ratings -->
+                            </span><!-- End .rating-container -->
+                        </label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-checkbox">
+                        <input rating="3" type="checkbox" class="rating-filter custom-control-input" id="cus-rating-3">
+                        <label class="custom-control-label" for="cus-rating-3">
+                            <span class="ratings-container">
+                                <span class="mr-2">>=</span>
+                                <span class="ratings">
+                                    <span class="ratings-val" style="width: 60%;"></span><!-- End .ratings-val -->
+                                </span><!-- End .ratings -->
+                            </span><!-- End .rating-container -->
+                        </label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-checkbox">
+                        <input rating="2" type="checkbox" class="rating-filter custom-control-input" id="cus-rating-4">
+                        <label class="custom-control-label" for="cus-rating-4">
+                            <span class="ratings-container">
+                                <span class="mr-2">>=</span>
+                                <span class="ratings">
+                                    <span class="ratings-val" style="width: 40%;"></span><!-- End .ratings-val -->
+                                </span><!-- End .ratings -->
+                            </span><!-- End .rating-container -->
+                        </label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+                <div class="filter-item">
+                    <div class="custom-control custom-checkbox">
+                        <input rating="1" type="checkbox" class="rating-filter custom-control-input" id="cus-rating-5">
+                        <label class="custom-control-label" for="cus-rating-5">
+                            <span class="ratings-container">
+                                <span class="mr-2">>=</span>
+                                <span class="ratings">
+                                    <span class="ratings-val" style="width: 20%;"></span><!-- End .ratings-val -->
+                                </span><!-- End .ratings -->
+                            </span><!-- End .rating-container -->
+                        </label>
+                    </div><!-- End .custom-checkbox -->
+                </div><!-- End .filter-item -->
+
+            </div><!-- End .filter-items -->
+        </div><!-- End .widget-body -->
+    </div><!-- End .widget -->
+    @*  <div class="widget">
+    <h3 class="widget-title">Colour</h3><!-- End .widget-title -->
+
+    <div class="widget-body">
+    <div class="filter-colors">
+    <a href="#" style="background: #b87145;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #f0c04a;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #333333;"><span class="sr-only">Color Name</span></a>
+    <a href="#" class="selected" style="background: #cc3333;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #3399cc;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #669933;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #f2719c;"><span class="sr-only">Color Name</span></a>
+    <a href="#" style="background: #ebebeb;"><span class="sr-only">Color Name</span></a>
+    </div><!-- End .filter-colors -->
+    </div><!-- End .widget-body -->
+    </div><!-- End .widget --> *@
+
+
+</aside><!-- End .col-lg-3 -->

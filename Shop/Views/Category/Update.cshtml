@@ -1,0 +1,53 @@
+﻿﻿@using Application;
+@using Newtonsoft.Json;
+@using Application.Categories;
+@model CategoryUpdateViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Update category @Model.Name</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update category @Model.Name</h5>
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3" method="post" enctype="multipart/form-data" action="/Category/Update">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden">
+                        <input asp-for="ImageUrl" type="hidden" />
+                        <div class="row-6">
+                            <label asp-for="Name" class="form-label">Category name*</label>
+                            <input asp-for="Name" type="text" class="form-control">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="row-6">
+                            <label asp-for="Image" class="form-label">Category Image (leave for unchange)</label>
+                            <input asp-for="Image" accept="image/*" class="form-control" type="file">
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+@section Scripts {
+    <script src="~/NiceAdmin/js/result.js"></script>
+}

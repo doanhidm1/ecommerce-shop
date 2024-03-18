@@ -1,0 +1,103 @@
+﻿﻿@using Application;
+@using Application.Products
+@using Newtonsoft.Json;
+@model ProductListingPageModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Create Product</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Create new product</h5>
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3" method="post" enctype="multipart/form-data" action="/adminproduct/create" id="create-product-form">
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-8">
+                            <label for="ProductName" class="form-label">Product name*</label>
+                            <input name="ProductName" type="text" class="form-control" id="ProductName">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="Images" class="form-label">Product images*</label>
+                            <input name="Images" multiple accept="image/*" class="form-control" type="file" id="Images">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="CategoryId" class="form-label">Category*</label>
+                            <select name="CategoryId" id="CategoryId" class="form-select" aria-label="Default select example">
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                })
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="BrandId" class="form-label">Brand*</label>
+                            <select name="BrandId" id="BrandId" class="form-select" aria-label="Default select example">
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                })
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="Price" class="form-label">Price*</label>
+                            <input name="Price" type="number" class="form-control" id="Price">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="DiscountPrice" class="form-label">Discount price</label>
+                            <input name="DiscountPrice" type="number" class="form-control" id="DiscountPrice">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="Quantity" class="form-label">Stock*</label>
+                            <input name="Quantity" type="number" class="form-control" id="Quantity">
+                        </div>
+
+                        <div class="col-md-2 pt-4" style="text-align: center">
+                            <input value="true" name="IsFeatured" class="form-check-input" type="checkbox" id="IsFeatured">
+                            <label class="form-check-label" for="IsFeatured">
+                                Featured
+                            </label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Description" class="form-label">Description*</label>
+                            <textarea id="Description" name="Description" class="form-control" style="height: 100px"></textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Detail" class="form-label">Detail*</label>
+                            <textarea id="Detail" name="Detail" class="form-control" style="height: 100px"></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button disabled id="btn-create-product" type="button" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+
+@section Scripts {
+    <script src="~/NiceAdmin/js/create-product.js"></script>
+    <script src="~/NiceAdmin/js/result.js"></script>
+}
