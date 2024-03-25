@@ -154,7 +154,7 @@ namespace Shop.Controllers
         {
             try
             {
-                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
+                var callbackUrl = Url.Action("ConfirmEmail", "User", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
                 var subject = "Confirm your email";
                 var message = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.";
                 await _emailSender.SendEmailAsync(user.Email!, subject, message);
@@ -172,28 +172,28 @@ namespace Shop.Controllers
             if (userId.IsNullOrEmpty() || token.IsNullOrEmpty())
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Invalid confirm information!"));
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User not exist!"));
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
             }
             var isConfirmed = await _userManager.IsEmailConfirmedAsync(user);
             if (isConfirmed)
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "User already confirmed!"));
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
             }
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Confirm email successfully!"));
-                return RedirectToAction("Login");
+                return RedirectToAction("Login","Account");
             }
             TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Confirm email failed!"));
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Account");
         }
 
         private async Task<string> SaveImage(IFormFile image)

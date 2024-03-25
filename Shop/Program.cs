@@ -100,7 +100,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=AdminProduct}/{action=Index}");
+    pattern: "{controller=Home}/{action=Index}");
 
 // app.UseStatusCodePagesWithRedirects("/ErrorCode/{0}");
 
