@@ -11,9 +11,9 @@ namespace Application.Checkout
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Bill, Guid> _billRepository;
-        private readonly IRepository<BillDetail, Guid> _billDetailRepository;
+        private readonly IRepository<OrderDetail, Guid> _billDetailRepository;
 
-        public BillService(IUnitOfWork unitOfWork, IRepository<Bill, Guid> billRepository, IRepository<BillDetail, Guid> billDetailRepository)
+        public BillService(IUnitOfWork unitOfWork, IRepository<Bill, Guid> billRepository, IRepository<OrderDetail, Guid> billDetailRepository)
         {
             _unitOfWork = unitOfWork;
             _billRepository = billRepository;
@@ -27,12 +27,11 @@ namespace Application.Checkout
             {
                 var bill = new Bill
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Street = model.Street,
-                    City = model.City,
-                    Country = model.Country,
-                    ZipCode = model.ZipCode,
+                    CustomerName = model.CustomerName,
+                    CityProvince = model.CityProvince,
+                    DistrictTown = model.DistrictTown,
+                    WardCommune = model.WardCommune,
+                    ExactAddress = model.ExactAddress,
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
                     Note = model.Note,
@@ -51,16 +50,16 @@ namespace Application.Checkout
                 }
                 await transaction.CommitAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync();
-                throw ex;
+                throw new Exception("Create bill failed");
             }
         }
 
         private async Task CreateBillDetail(Bill bill, BillDetailCreateViewModel item)
         {
-            var billDetail = new BillDetail
+            var billDetail = new OrderDetail
             {
                 Id = Guid.NewGuid(),
                 BillId = bill.Id,

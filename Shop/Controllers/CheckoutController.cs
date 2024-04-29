@@ -42,24 +42,22 @@ namespace Shop.Controllers
             }
             var billModel = new BillCreateViewModel
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Street = model.Street,
-                City = model.City,
-                Country = model.Country,
-                ZipCode = model.ZipCode,
+                CustomerName = model.CustomerName,
+                CityProvince = model.CityProvince,
+                DistrictTown = model.DistrictTown,
+                WardCommune = model.WardCommune,
+                ExactAddress = model.ExactAddress,
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
                 Note = model.Note,
-                PaymentMethod = model.PaymentMethod
+                PaymentMethod = model.PaymentMethod,
+                BillDetails = cart.Select(s => new BillDetailCreateViewModel
+                {
+                    Price = s.Price,
+                    ProductName = s.ProductName,
+                    Quantity = s.Quantity,
+                }).ToList()
             };
-
-            billModel.BillDetails = cart.Select(s => new BillDetailCreateViewModel
-            {
-                Price = s.Price,
-                ProductName = s.ProductName,
-                Quantity = s.Quantity,
-            }).ToList();
             try
             {
                 await _billService.CreateBill(billModel);

@@ -1,7 +1,5 @@
 ﻿﻿@using Application;
-@using Application.Products
 @using Newtonsoft.Json;
-@model ProductListingPageModel
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -12,20 +10,20 @@
     var status = data?.StatusCode ?? default;
 }
 
-<title>Manage Products</title>
+<title>Manage Orders</title>
 
 <main id="main" class="main">
-<p hidden id="message">@message</p>
-<p hidden id="status">@status</p>
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
 
                 <div class="card">
                     <div class="card-body">
-@*                         <div class="row mb-4" style="justify-content: space-between"> *@
-                            <h5 style="display: inline-block" class="card-title col-sm-2">All products (@Model.Categories.Sum(c => c.ProductCount))</h5>
-                            <a href="/AdminProduct/Create" type="button" class="btn btn-success">Add new</a>
+                        @*                         <div class="row mb-4" style="justify-content: space-between"> *@
+                        <h5 style="display: inline-block" class="card-title col-sm-2">All orders (@* @Model.Categories.Sum(c => c.ProductCount) *@)</h5>
+                        @* <a href="/AdminProduct/Create" type="button" class="btn btn-success">Add new</a> *@
                         @* </div> *@
                         <div class="row mb-4" style="justify-content: space-between">
                             <label for="inputText" class="col-sm-1 col-form-label">Search</label>
@@ -33,43 +31,43 @@
                                 <input id="product-search" type="text" class="form-control" placeholder="Enter product name...">
                             </div>
 
-                            <label class="col-sm-2 col-form-label">Category (@Model.Categories.Count)</label>
+                            <label class="col-sm-2 col-form-label">Category (@* @Model.Categories.Count *@)</label>
                             <div class="col-sm-4">
                                 <select id="product-category-filter" class="form-select" aria-label="Default select example">
                                     <option selected value="">All</option>
-                                    @if (Model.Categories.Any())
+                                    @* @if (Model.Categories.Any())
                                     {
                                         foreach (var category in Model.Categories)
                                         {
                                             <option value="@category.Id">@category.Name (@category.ProductCount)</option>
                                         }
-                                    }
+                                    } *@
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mb-4" style="justify-content: space-between">
-                            <label class="col-sm-2 col-form-label">Brand (@Model.Brands.Count)</label>
+                            <label class="col-sm-2 col-form-label">Brand (@* @Model.Brands.Count *@)</label>
                             <div class="col-sm-3">
                                 <select id="product-brand-filter" class="form-select" aria-label="Default select example">
                                     <option selected value="">All</option>
-                                    @if (Model.Brands.Any())
+                                    @* @if (Model.Brands.Any())
                                     {
                                         foreach (var brand in Model.Brands)
                                         {
                                             <option value="@brand.Id">@brand.Name (@brand.ProductCount)</option>
                                         }
-                                    }
+                                    } *@
                                 </select>
                             </div>
 
                             <label class="col-sm-2 col-form-label">Sort by</label>
                             <div class="col-sm-4">
                                 <select id="product-order-by" class="form-select" aria-label="Default select example">
-                                    @foreach (var item in Model.OrderBys)
+                                    @* @foreach (var item in Model.OrderBys)
                                     {
                                         <option value="@item.Key">@item.Value</option>
-                                    }
+                                    } *@
 
                                 </select>
                             </div>
@@ -102,6 +100,5 @@
 
 </main><!-- End #main -->
 @section Scripts {
-    <script src="~/NiceAdmin/js/product-list.js"></script>
     <script src="~/NiceAdmin/js/result.js"></script>
 }

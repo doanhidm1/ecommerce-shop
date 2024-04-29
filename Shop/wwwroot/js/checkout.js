@@ -1,33 +1,42 @@
+﻿const apiUrl = "https://vietnam-administrative-division-json-server-swart.vercel.app";
+const apiEndpointDistrict = apiUrl + '/district/?idProvince=';
+const apiEndpointCommune = apiUrl + '/commune/?idDistrict=';
+
+async function getDistrict(idProvince) {
+    const { data: districtList } = await axios.get(apiEndpointDistrict + idProvince);
+    return districtList
+}
+
+async function getCommune(idDistrict) {
+    const { data: communeList } = await axios.get(apiEndpointCommune + idDistrict);
+    return communeList
+}
+
 $.validator.addMethod("phoneUS", function (phone_number, element) {
     phone_number = phone_number.replace(/\s+/g, "");
     return this.optional(element) || phone_number.match(/^0\d{9}$/);
 }, "Please enter a valid 10-digit phone number.");
 
-$.validator.addMethod("zipcode", function (value, element) {
-    return this.optional(element) || /^\d{5}$/.test(value);
-}, "Please enter a valid zip code.");
+$.validator.addMethod("mail", function (email, element) {
+    return this.optional(element) || email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
+}, "Please enter a valid email address.");
 
 $('#frm-customer-info').validate({
     rules: {
-        FirstName: {
+        CustomerName: {
             required: true,
         },
-        LastName: {
+        CityProvince: {
             required: true,
         },
-        Street: {
+        DistrictTown: {
             required: true,
         },
-        City: {
+        WardCommune: {
             required: true,
         },
-        Country: {
+        ExactAddress: {
             required: true,
-        },
-        ZipCode: {
-            required: true,
-            number: true,
-            zipcode: true,
         },
         PhoneNumber: {
             required: true,
@@ -35,31 +44,27 @@ $('#frm-customer-info').validate({
         },
         Email: {
             required: true,
-            email: true,
+            mail: true,
         },
         terms: {
             required: true,
         },
     },
     messages: {
-        FirstName: {
-            required: "Please enter your first name",
+        CustomerName: {
+            required: "Please enter your name",
         },
-        LastName: {
-            required: "Please enter your last name",
+        CityProvince: {
+            required: "Please select your city/province",
         },
-        Street: {
-            required: "Please enter your street",
+        DistrictTown: {
+            required: "Please select your district/town",
         },
-        City: {
-            required: "Please enter your city",
+        WardCommune: {
+            required: "Please select your ward/commune",
         },
-        Country: {
-            required: "Please enter your country",
-        },
-        ZipCode: {
-            required: "Please enter your zip code",
-            number: "Please enter a valid zip code",
+        ExactAddress: {
+            required: "Please enter your exact address",
         },
         PhoneNumber: {
             required: "Please enter your phone number",
@@ -121,4 +126,51 @@ function init() {
     }
 }
 init();
+
+function updateAdress() {
+    var cityProvince = $('#city-province option:selected').text();
+    var districtTown = $('#district-town option:selected').text();
+    var wardCommune = $('#ward-commune option:selected').text();
+    $('#cityprovince').val(cityProvince);
+    $('#districttown').val(districtTown);
+    $('#wardcommune').val(wardCommune);
+}
+
+$('#city-province').on("change", async function () {
+    $('.district-town-select > span').css('display', 'block');
+    const idProvince = $('#city-province').val();
+    let outputCommune = "";
+    $('#ward-commune').html(outputCommune);
+    const districtList = await getDistrict(idProvince) || [];
+    let outputDistrict = "";
+    for (let i = 0; i < districtList.length; i++) {
+        if (districtList[i].idProvince === idProvince) {
+            outputDistrict += `<option value='${districtList[i].idDistrict}'>${districtList[i].name}</option>`;
+        }
+    }
+    $('#district-town').html(outputDistrict);
+    $('.district-town-select > span').css('display', 'none');
+    $('#district-town').trigger('change');
+});
+
+$('#district-town').on("change", async function () {
+    $('.wardcommune-select > span').css('display', 'block');
+    const idDistrict = $('#district-town').val();
+    const communeList = await getCommune(idDistrict) || [];
+    let outputCommune = "";
+    for (let i = 0; i < communeList.length; i++) {
+        if (communeList[i].idDistrict === idDistrict) {
+            outputCommune += `<option value='${communeList[i].idCommune}'>${communeList[i].name}</option>`;
+        }
+    }
+    $('#ward-commune').html(outputCommune);
+    $('.ward-commune-select > span').css('display', 'none');
+    $('#ward-commune').trigger('change');
+});
+
+$('#ward-commune').on("change", function () {
+    updateAdress();
+});
+
 $('body').on('click', '#btn-place-order', (e) => placeOrder(e));
+$('#city-province').trigger('change');

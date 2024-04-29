@@ -3,7 +3,7 @@
 namespace Domain.Entities
 {
     [Table("BillDetails")]
-    public class BillDetail : BaseEntity
+    public class OrderDetail : BaseEntity
     {
         [Column(TypeName = "nvarchar(100)")]
         public string ProductName { get; set; }
