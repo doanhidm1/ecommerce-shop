@@ -1,0 +1,25 @@
+﻿﻿@using Application;
+@using Application.Orders
+@using Newtonsoft.Json;
+@model OrderUpdateViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var response = TempData["response"]?.ToString() ?? string.Empty;
+    var data = JsonConvert.DeserializeObject<ResponseResult>(response);
+    var message = data?.Message ?? string.Empty;
+    var status = data?.StatusCode ?? default;
+}
+
+<title>Update Order Status</title>
+
+<main id="main" class="main">
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
+    <section class="section">
+    </section>
+
+</main><!-- End #main -->
+@section Scripts {
+    <script src="~/NiceAdmin/js/result.js"></script>
+}

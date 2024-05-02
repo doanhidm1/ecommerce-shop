@@ -39,7 +39,7 @@ namespace Application.Checkout
                     PaymentMethod = model.PaymentMethod,
                     Id = Guid.NewGuid(),
                     CreatedDate = DateTime.Now,
-                    Status = Domain.Enums.EntityStatus.Active,
+                    Status = Domain.Enums.EntityStatus.Pending,
 
                 };
                 await _billRepository.Add(bill);

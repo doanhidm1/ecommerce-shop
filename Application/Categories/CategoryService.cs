@@ -46,11 +46,7 @@ namespace Application.Categories
 
         public async Task DeleteCategory(Guid id)
         {
-            var category = await _categoryRepository.FindById(id);
-            if (category == null)
-            {
-                throw new Exception("Category not found!");
-            }
+            var category = await _categoryRepository.FindById(id) ?? throw new Exception("Category not found!");
             var products = await _productRepository.GetAll().Where(p => p.CategoryId == id).ToListAsync();
             using var transaction = await _unitOfWork.BeginTransactionAsync();
             try
@@ -93,11 +89,7 @@ namespace Application.Categories
 
         public async Task<CategoryViewModel> GetCategoryDetail(Guid id)
         {
-            var category = await _categoryRepository.FindById(id);
-            if (category == null)
-            {
-                throw new Exception("Category not found!");
-            }
+            var category = await _categoryRepository.FindById(id) ?? throw new Exception("Category not found!");
             var productCount = await _productRepository.GetAll().CountAsync(p => p.CategoryId == id);
             var categoryViewModel = new CategoryViewModel
             {
@@ -111,11 +103,7 @@ namespace Application.Categories
 
         public async Task UpdateCategory(CategoryUpdateViewModel model)
         {
-            var category = await _categoryRepository.FindById(model.Id);
-            if (category == null)
-            {
-                throw new Exception("Category not found!");
-            }
+            var category = await _categoryRepository.FindById(model.Id) ?? throw new Exception("Category not found!");
             category.Name = model.Name;
             category.Image = model.ImageUrl;
             await _categoryRepository.Update(category);

@@ -11,7 +11,6 @@ namespace Application.Orders
         public string? DistrictTown { get; set; }
         public string? WardCommune { get; set; }
         public EntityStatus? Status { get; set; }
-        public DateOnly? FromDate { get; set; }
-        public DateOnly? ToDate { get; set; }
+        public SortEnum? OrderBy { get; set; }
     }
 }

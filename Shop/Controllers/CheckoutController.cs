@@ -11,10 +11,13 @@ namespace Shop.Controllers
     public class CheckoutController : Controller
     {
         private readonly IBillService _billService;
-        public CheckoutController(IBillService billService)
+        private readonly IProductService _productService;
+        public CheckoutController(IBillService billService, IProductService productService)
         {
             _billService = billService;
+            _productService = productService;
         }
+
         public IActionResult Index(int PaymentMethod)
         {
             var model = new CheckoutViewModel();
@@ -23,6 +26,23 @@ namespace Shop.Controllers
             model.ShippingMethod = EnumHelper.GetList(typeof(PaymentMethod));
             ViewBag.PaymentMethod = PaymentMethod;
             return View(model);
+        }
+
+        // check item quantity before place order
+        private async Task<bool> CheckQuantity()
+        {
+            var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
+            foreach (var item in cart)
+            {
+                var product = await _productService.GetProductDetail(item.ProductId);
+                if (product.Stock < item.Quantity)
+                {
+                    cart.Remove(item);
+                    HttpContext.Session.SetT(ShopConstants.Cart, cart);
+                    return false;
+                }
+            }
+            return true;
         }
 
         [ValidateAntiForgeryToken]
@@ -35,6 +55,14 @@ namespace Shop.Controllers
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
                 return RedirectToAction("Index");
             }
+            var checkQuantity = await CheckQuantity();
+            if (!checkQuantity)
+            {
+                var response = new ResponseResult(400, "Some items are out of stock");
+                TempData["checkout"] = JsonConvert.SerializeObject(response);
+                return RedirectToAction("Index");
+            }
+            
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
@@ -61,6 +89,10 @@ namespace Shop.Controllers
             try
             {
                 await _billService.CreateBill(billModel);
+                foreach (var item in cart)
+                {
+                    await _productService.UpdateQuantity(item.ProductId, item.Quantity);
+                }
                 var response = new ResponseResult(200, "Place order success");
                 HttpContext.Session.Remove(ShopConstants.Cart);
                 TempData["checkout"] = JsonConvert.SerializeObject(response);

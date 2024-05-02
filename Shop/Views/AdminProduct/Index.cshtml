@@ -15,18 +15,15 @@
 <title>Manage Products</title>
 
 <main id="main" class="main">
-<p hidden id="message">@message</p>
-<p hidden id="status">@status</p>
+    <p hidden id="message">@message</p>
+    <p hidden id="status">@status</p>
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
-
                 <div class="card">
                     <div class="card-body">
-@*                         <div class="row mb-4" style="justify-content: space-between"> *@
-                            <h5 style="display: inline-block" class="card-title col-sm-2">All products (@Model.Categories.Sum(c => c.ProductCount))</h5>
-                            <a href="/AdminProduct/Create" type="button" class="btn btn-success">Add new</a>
-                        @* </div> *@
+                        <h5 style="display: inline-block" class="card-title col-sm-2">All products (@Model.Categories.Sum(c => c.ProductCount))</h5>
+                        <a href="/AdminProduct/Create" type="button" class="btn btn-success">Add new</a>
                         <div class="row mb-4" style="justify-content: space-between">
                             <label for="inputText" class="col-sm-1 col-form-label">Search</label>
                             <div class="col-sm-4">
@@ -73,12 +70,25 @@
 
                                 </select>
                             </div>
+
+                            <!-- Example single danger button -->
+                            <div class="btn-group dropend mt-3" style="width: 15%;display: inline-block">
+                                <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export to file
+                                </button>
+                                <ul class="dropdown-menu" style="padding: 0 !important">
+                                    <li><button id="btn-export-word" type="button" class="btn btn-primary w-100">Word (.docx)</button></li>
+                                    <li><button id="btn-export-excel" type="button" class="btn btn-success w-100">Excel (.xlsx)</button></li>
+                                    <li><button id="btn-export-pdf" type="button" class="btn btn-danger w-100">Pdf (.pdf)</button></li>
+                                </ul>
+                            </div>
                         </div>
                         <!-- Table with stripped rows -->
                         <table style="text-align: center" class="table datatable table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Image</th>
                                     <th>Stock</th>
                                     <th>Price</th>
                                     <th>Discount Price</th>
@@ -87,7 +97,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-content">
+                            <tbody id="table-content" style="vertical-align: middle">
                                 @*partial view*@
                             </tbody>
                         </table>
@@ -102,6 +112,6 @@
 
 </main><!-- End #main -->
 @section Scripts {
-    <script src="~/NiceAdmin/js/product-list.js"></script>
     <script src="~/NiceAdmin/js/result.js"></script>
+    <script src="~/NiceAdmin/js/product-list.js"></script>
 }

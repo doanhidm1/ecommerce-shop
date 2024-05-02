@@ -275,6 +275,7 @@ namespace Shop.Controllers
                 await _unitOfWork.SaveChangesAsync();
                 await _userManager.UpdateSecurityStampAsync(user);
                 await transaction.CommitAsync();
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, $"Updated role(s) for user {user.UserName} successfully"));
                 return RedirectToAction("Index");
             }

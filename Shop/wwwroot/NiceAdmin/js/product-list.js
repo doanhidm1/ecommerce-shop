@@ -42,6 +42,9 @@ var dataTable =
                 dataTable.paging(total, function () {
 
                 }, changePageSize);
+            },
+            error: function() {
+                $.notify("Failed to load data", "error");
             }
         });
     },
@@ -57,7 +60,7 @@ var dataTable =
         if ($('#pagination a').length === 0 || changePageSize === true) {
             $('#pagination').empty(); //pagination là id của <div id ="pagination "> </div> có thể thay đổi tùy ý
             $('#pagination').removeData("twbs-pagination");
-            $('#pagination').unbind("page");
+            $('#pagination').off("page");
         }
         $('#pagination').twbsPagination({
             totalPages: totalPage,
@@ -82,37 +85,127 @@ function filterproduct() {
     dataTable.loadData(true);
 }
 
-function changePage() {
-    homeconfig.pageSize = Number($('#product-page-size').val());
-    dataTable.loadData(true);
+function ExportWord() {
+    var model = new Object();
+    model.PageSize = homeconfig.pageSize;
+    model.PageIndex = homeconfig.pageIndex;
+    model.IsFeatured = false;
+    model.FromPrice = fromPrice;
+    model.ToPrice = toPrice;
+    model.CategoryId = $('#product-category-filter').val()
+    model.Rating = rating;
+    model.KeyWord = $('#product-search').val() ?? null;
+    model.SortBy = Number($('#product-order-by').val());
+    model.SelectedBrandIds = [];
+    var brandIds = $('#product-brand-filter').val();
+    if (brandIds) {
+        model.SelectedBrandIds.push(brandIds)
+    }
+
+    $.ajax({
+        type: 'post',
+        url: '/adminproduct/exportword', //url của action return ra partial view
+        data: JSON.stringify(model),
+        xhrFields: { responseType: 'blob' },
+        contentType: "application/json; charset=utf-8",
+        success: function (blob) {
+            var windowUrl = window.URL || window.webkitURL;
+            var url = windowUrl.createObjectURL(blob);
+            var anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `ProductReport${new Date().toJSON()}.docx`;
+            anchor.click();
+            windowUrl.revokeObjectURL(url);
+            $.notify("Export to word file successfully", "success");
+        },
+        error: function() {
+            $.notify("Failed to export to word file", "error");
+        }
+    });
 }
 
-// biding event
+function ExportExcel() {
+    var model = new Object();
+    model.PageSize = homeconfig.pageSize;
+    model.PageIndex = homeconfig.pageIndex;
+    model.IsFeatured = false;
+    model.FromPrice = fromPrice;
+    model.ToPrice = toPrice;
+    model.CategoryId = $('#product-category-filter').val()
+    model.Rating = rating;
+    model.KeyWord = $('#product-search').val() ?? null;
+    model.SortBy = Number($('#product-order-by').val());
+    model.SelectedBrandIds = [];
+    var brandIds = $('#product-brand-filter').val();
+    if (brandIds) {
+        model.SelectedBrandIds.push(brandIds)
+    }
 
-//$('body').on('click', 'input.price-filter', function () {
-//    // get price from input (this)
-//    fromPrice = Number($(this).attr('price-min'));
-//    toPrice = Number($(this).attr('price-max'));
-//    filterproduct();
-//});
+    $.ajax({
+        type: 'post',
+        url: '/adminproduct/exportexcel', //url của action return ra partial view
+        data: JSON.stringify(model),
+        xhrFields: { responseType: 'blob' },
+        contentType: "application/json; charset=utf-8",
+        success: function (blob) {
+            var windowUrl = window.URL || window.webkitURL;
+            var url = windowUrl.createObjectURL(blob);
+            var anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `ProductReport${new Date().toJSON()}.xlsx`;
+            anchor.click();
+            windowUrl.revokeObjectURL(url);
+            $.notify("Export to excel file successfully", "success");
+        },
+        error: function() {
+            $.notify("Failed to export to excel file", "error");
+        }
+    });
+}
 
-//$('body').on('change', 'input.rating-filter', function () {
-//    // Lấy giá trị rating từ thuộc tính rating của checkbox
-//    rating = $(this).prop('checked') ? Number($(this).attr('rating')) : null;
+function ExportPdf() {
+    var model = new Object();
+    model.PageSize = homeconfig.pageSize;
+    model.PageIndex = homeconfig.pageIndex;
+    model.IsFeatured = false;
+    model.FromPrice = fromPrice;
+    model.ToPrice = toPrice;
+    model.CategoryId = $('#product-category-filter').val()
+    model.Rating = rating;
+    model.KeyWord = $('#product-search').val() ?? null;
+    model.SortBy = Number($('#product-order-by').val());
+    model.SelectedBrandIds = [];
+    var brandIds = $('#product-brand-filter').val();
+    if (brandIds) {
+        model.SelectedBrandIds.push(brandIds)
+    }
 
-//    // Nếu checkbox được chọn, bỏ chọn tất cả các checkbox khác
-//    if ($(this).prop('checked')) {
-//        $('input.rating-filter').not(this).prop('checked', false);
-//    }
+    $.ajax({
+        type: 'post',
+        url: '/adminproduct/exportpdf', //url của action return ra partial view
+        data: JSON.stringify(model),
+        xhrFields: { responseType: 'blob' },
+        contentType: "application/json; charset=utf-8",
+        success: function (blob) {
+            var windowUrl = window.URL || window.webkitURL;
+            var url = windowUrl.createObjectURL(blob);
+            var anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `ProductReport${new Date().toJSON()}.pdf`;
+            anchor.click();
+            windowUrl.revokeObjectURL(url);
+            $.notify("Export to pdf file successfully", "success");
+        },
+        error: function () {
+            $.notify("Failed to export to pdf file", "error");
+        }
+    });
+}
 
-//    // Gọi hàm filterproduct() và truyền giá trị rating vào
-//    filterproduct();
-//});
-
-// $('body').on('change', '#price-min', filterproduct);
-// $('body').on('change', '#price-max', filterproduct);
 $('body').on('change', '#product-order-by', filterproduct);
-//$('body').on('change', '#product-page-size', changePage);
 $('body').on('change', '#product-category-filter', filterproduct);
 $('body').on('change', '#product-brand-filter', filterproduct);
 $('body').on('change', '#product-search', filterproduct);
+$('body').on('click', '#btn-export-word', ExportWord);
+$('body').on('click', '#btn-export-excel', ExportExcel);
+$('body').on('click', '#btn-export-pdf', ExportPdf);

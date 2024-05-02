@@ -31,7 +31,7 @@ namespace Shop.Controllers
             return PartialView(cart ?? new List<CartItemViewModel>());
         }
 
-        public async Task<IActionResult> AddToCart(Guid productId, int qty)
+        public async Task<IActionResult>  AddToCart(Guid productId, int qty)
         {
             if (qty <= 0)
             {
@@ -42,30 +42,44 @@ namespace Shop.Controllers
             {
                 return Json(new ResponseResult(404, "Product is not found"));
             }
+
             if (cartItem.Stock < qty)
             {
                 return Json(new ResponseResult(400, "Product is out of stock"));
             }
             cartItem.Quantity = qty;
+
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
-                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, new List<CartItemViewModel>() { cartItem });
+                HttpContext.Session.SetT(ShopConstants.Cart, new List<CartItemViewModel>() { cartItem });
             }
             else
             {
-                UpdateCartItemQuantity(cart, cartItem);
-                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, cart);
+                try
+                {
+                    UpdateCartItemQuantity(cart, cartItem);
+                }
+                catch (Exception ex)
+                {
+                    return Json(new ResponseResult(400, ex.Message));
+                }
+                HttpContext.Session.SetT(ShopConstants.Cart, cart);
             }
             return Json(new ResponseResult(200, $"Add {cartItem.ProductName} to cart success!"));
         }
 
-        private void UpdateCartItemQuantity(List<CartItemViewModel> cart, CartItemViewModel cartItem)
+        private static void UpdateCartItemQuantity(List<CartItemViewModel> cart, CartItemViewModel cartItem)
         {
             var item = cart.FirstOrDefault(s => s.ProductId == cartItem.ProductId);
             if (item != null)
             {
-                item.Quantity += cartItem.Quantity;
+                var total = item.Quantity += cartItem.Quantity;
+                if(total > item.Stock)
+                {
+                    throw new Exception("Product is out of stock");
+                }
+                item.Quantity = total;
             }
             else
             {
@@ -88,7 +102,7 @@ namespace Shop.Controllers
             else
             {
                 cart.RemoveAll(s => s.ProductId == productId);
-                HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, cart);
+                HttpContext.Session.SetT(ShopConstants.Cart, cart);
                 return Json(new ResponseResult(200, $"Remove {cartItem.ProductName} success!"));
             }
         }
@@ -128,7 +142,7 @@ namespace Shop.Controllers
 
         // 3. Set lại giỏ hàng trong Session (hoặc cơ sở dữ liệu nếu bạn lưu giỏ hàng ở đó)
         SetCart:
-            HttpContext.Session.SetT<CartItemViewModel>(ShopConstants.Cart, updatedProducts);
+            HttpContext.Session.SetT(ShopConstants.Cart, updatedProducts);
 
             return Json(new ResponseResult(200, "Cart updated successfully"));
         }

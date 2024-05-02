@@ -38,10 +38,40 @@ namespace Shop.Controllers
             var model = new ProductListingPageModel
             {
                 Categories = await _categoryService.GetCategories(),
-                Brands =  await _brandService.GetBrands(),
+                Brands = await _brandService.GetBrands(),
                 OrderBys = EnumHelper.GetList(typeof(SortEnum))
             };
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportWord([FromBody] ProductPage model)
+        {
+            model.PageSize = int.MaxValue;
+            model.PageIndex = 1;
+            var data = (await _productService.GetProducts(model)).Data;
+            var fileBytes = await _productService.ExportToWord(data);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportExcel([FromBody] ProductPage model)
+        {
+            model.PageSize = int.MaxValue;
+            model.PageIndex = 1;
+            var data = (await _productService.GetProducts(model)).Data;
+            var fileBytes = await _productService.ExportToExcel(data);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExportPdf([FromBody] ProductPage model)
+        {
+            model.PageSize = int.MaxValue;
+            model.PageIndex = 1;
+            var data = (await _productService.GetProducts(model)).Data;
+            var fileBytes = await _productService.ExportToPdf(data);
+            return File(fileBytes, "application/pdf");
         }
 
         public async Task<IActionResult> Create()
@@ -81,42 +111,6 @@ namespace Shop.Controllers
         {
             var result = await _productService.GetProducts(model);
             return PartialView(result);
-        }
-
-        private async Task<List<string>> SaveImage(List<IFormFile> images)
-        {
-            var imageLinks = new List<string>();
-            foreach (var image in images)
-            {
-                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
-                string productImageDir = Path.Combine(uploadFolder, ImageFolder);
-                if (!Directory.Exists(productImageDir))
-                {
-                    Directory.CreateDirectory(productImageDir);
-                }
-                string fileName = $"{Guid.NewGuid()}-{image.FileName}";
-                string fileUrl = $"/{ShopConstants.UploadFolder}/{ImageFolder}/{fileName}";
-                using var stream = new FileStream(Path.Combine(productImageDir, fileName), FileMode.Create);
-                await image.CopyToAsync(stream);
-                imageLinks.Add(fileUrl);
-            }
-            return imageLinks;
-        }
-
-        private void DeleteImage(List<ImageViewModel> images)
-        {
-            var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
-            var productImageDir = Path.Combine(uploadFolder, ImageFolder);
-            foreach (var image in images)
-            {
-                if (image.ImageLink == null) continue;
-                var fileName = image.ImageLink.Split('/').Last();
-                var filePath = Path.Combine(productImageDir, fileName);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-            }
         }
 
         public async Task<IActionResult> Update(Guid id)
@@ -193,6 +187,42 @@ namespace Shop.Controllers
             {
                 TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Product failed to delete!"));
                 return RedirectToAction("Index");
+            }
+        }
+
+        private async Task<List<string>> SaveImage(List<IFormFile> images)
+        {
+            var imageLinks = new List<string>();
+            foreach (var image in images)
+            {
+                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+                string productImageDir = Path.Combine(uploadFolder, ImageFolder);
+                if (!Directory.Exists(productImageDir))
+                {
+                    Directory.CreateDirectory(productImageDir);
+                }
+                string fileName = $"{Guid.NewGuid()}-{image.FileName}";
+                string fileUrl = $"/{ShopConstants.UploadFolder}/{ImageFolder}/{fileName}";
+                using var stream = new FileStream(Path.Combine(productImageDir, fileName), FileMode.Create);
+                await image.CopyToAsync(stream);
+                imageLinks.Add(fileUrl);
+            }
+            return imageLinks;
+        }
+
+        private void DeleteImage(List<ImageViewModel> images)
+        {
+            var uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, ShopConstants.UploadFolder);
+            var productImageDir = Path.Combine(uploadFolder, ImageFolder);
+            foreach (var image in images)
+            {
+                if (image.ImageLink == null) continue;
+                var fileName = image.ImageLink.Split('/').Last();
+                var filePath = Path.Combine(productImageDir, fileName);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿﻿@using Application;
+@using Application.Orders
 @using Newtonsoft.Json;
-
+@model OrderListingPageModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
@@ -21,71 +22,155 @@
 
                 <div class="card">
                     <div class="card-body">
-                        @*                         <div class="row mb-4" style="justify-content: space-between"> *@
-                        <h5 style="display: inline-block" class="card-title col-sm-2">All orders (@* @Model.Categories.Sum(c => c.ProductCount) *@)</h5>
-                        @* <a href="/AdminProduct/Create" type="button" class="btn btn-success">Add new</a> *@
-                        @* </div> *@
+                        <h5 id="count" style="display: inline-block" class="card-title col-sm-2">All orders</h5>
                         <div class="row mb-4" style="justify-content: space-between">
-                            <label for="inputText" class="col-sm-1 col-form-label">Search</label>
+                            <label for="inputText" class="col-sm-1 col-form-label">Name</label>
                             <div class="col-sm-4">
-                                <input id="product-search" type="text" class="form-control" placeholder="Enter product name...">
+                                <input id="customer-name" type="text" class="form-control" placeholder="Enter customer name...">
                             </div>
 
-                            <label class="col-sm-2 col-form-label">Category (@* @Model.Categories.Count *@)</label>
+                            <label class="col-sm-2 col-form-label">City/Province</label>
                             <div class="col-sm-4">
-                                <select id="product-category-filter" class="form-select" aria-label="Default select example">
-                                    <option selected value="">All</option>
-                                    @* @if (Model.Categories.Any())
-                                    {
-                                        foreach (var category in Model.Categories)
-                                        {
-                                            <option value="@category.Id">@category.Name (@category.ProductCount)</option>
-                                        }
-                                    } *@
+                                <select id="city-province" type="text" class="form-select" aria-label="Default select example">
+                                    <option selected value=""></option>
+                                    <option value='01'>Thành phố Hà Nội</option>
+                                    <option value='79'>Thành phố Hồ Chí Minh</option>
+                                    <option value='31'>Thành phố Hải Phòng</option>
+                                    <option value='48'>Thành phố Đà Nẵng</option>
+                                    <option value='92'>Thành phố Cần Thơ</option>
+                                    <option value='02'>Tỉnh Hà Giang</option>
+                                    <option value='04'>Tỉnh Cao Bằng</option>
+                                    <option value='06'>Tỉnh Bắc Kạn</option>
+                                    <option value='08'>Tỉnh Tuyên Quang</option>
+                                    <option value='10'>Tỉnh Lào Cai</option>
+                                    <option value='11'>Tỉnh Điện Biên</option>
+                                    <option value='12'>Tỉnh Lai Châu</option>
+                                    <option value='14'>Tỉnh Sơn La</option>
+                                    <option value='15'>Tỉnh Yên Bái</option>
+                                    <option value='17'>Tỉnh Hoà Bình</option>
+                                    <option value='19'>Tỉnh Thái Nguyên</option>
+                                    <option value='20'>Tỉnh Lạng Sơn</option>
+                                    <option value='22'>Tỉnh Quảng Ninh</option>
+                                    <option value='24'>Tỉnh Bắc Giang</option>
+                                    <option value='25'>Tỉnh Phú Thọ</option>
+                                    <option value='26'>Tỉnh Vĩnh Phúc</option>
+                                    <option value='27'>Tỉnh Bắc Ninh</option>
+                                    <option value='30'>Tỉnh Hải Dương</option>
+                                    <option value='33'>Tỉnh Hưng Yên</option>
+                                    <option value='34'>Tỉnh Thái Bình</option>
+                                    <option value='35'>Tỉnh Hà Nam</option>
+                                    <option value='36'>Tỉnh Nam Định</option>
+                                    <option value='37'>Tỉnh Ninh Bình</option>
+                                    <option value='38'>Tỉnh Thanh Hóa</option>
+                                    <option value='40'>Tỉnh Nghệ An</option>
+                                    <option value='42'>Tỉnh Hà Tĩnh</option>
+                                    <option value='44'>Tỉnh Quảng Bình</option>
+                                    <option value='45'>Tỉnh Quảng Trị</option>
+                                    <option value='46'>Tỉnh Thừa Thiên Huế</option>
+                                    <option value='49'>Tỉnh Quảng Nam</option>
+                                    <option value='51'>Tỉnh Quảng Ngãi</option>
+                                    <option value='52'>Tỉnh Bình Định</option>
+                                    <option value='54'>Tỉnh Phú Yên</option>
+                                    <option value='56'>Tỉnh Khánh Hòa</option>
+                                    <option value='58'>Tỉnh Ninh Thuận</option>
+                                    <option value='60'>Tỉnh Bình Thuận</option>
+                                    <option value='62'>Tỉnh Kon Tum</option>
+                                    <option value='64'>Tỉnh Gia Lai</option>
+                                    <option value='66'>Tỉnh Đắk Lắk</option>
+                                    <option value='67'>Tỉnh Đắk Nông</option>
+                                    <option value='68'>Tỉnh Lâm Đồng</option>
+                                    <option value='70'>Tỉnh Bình Phước</option>
+                                    <option value='72'>Tỉnh Tây Ninh</option>
+                                    <option value='74'>Tỉnh Bình Dương</option>
+                                    <option value='75'>Tỉnh Đồng Nai</option>
+                                    <option value='77'>Tỉnh Bà Rịa - Vũng Tàu</option>
+                                    <option value='80'>Tỉnh Long An</option>
+                                    <option value='82'>Tỉnh Tiền Giang</option>
+                                    <option value='83'>Tỉnh Bến Tre</option>
+                                    <option value='84'>Tỉnh Trà Vinh</option>
+                                    <option value='86'>Tỉnh Vĩnh Long</option>
+                                    <option value='87'>Tỉnh Đồng Tháp</option>
+                                    <option value='89'>Tỉnh An Giang</option>
+                                    <option value='91'>Tỉnh Kiên Giang</option>
+                                    <option value='93'>Tỉnh Hậu Giang</option>
+                                    <option value='94'>Tỉnh Sóc Trăng</option>
+                                    <option value='95'>Tỉnh Bạc Liêu</option>
+                                    <option value='96'>Tỉnh Cà Mau</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mb-4" style="justify-content: space-between">
-                            <label class="col-sm-2 col-form-label">Brand (@* @Model.Brands.Count *@)</label>
-                            <div class="col-sm-3">
-                                <select id="product-brand-filter" class="form-select" aria-label="Default select example">
-                                    <option selected value="">All</option>
-                                    @* @if (Model.Brands.Any())
-                                    {
-                                        foreach (var brand in Model.Brands)
-                                        {
-                                            <option value="@brand.Id">@brand.Name (@brand.ProductCount)</option>
-                                        }
-                                    } *@
-                                </select>
+                            <label for="inputText" class="col-sm-1 col-form-label">Phone</label>
+                            <div class="col-sm-4">
+                                <input id="Phone" type="text" class="form-control" placeholder="Enter customer phone...">
                             </div>
 
-                            <label class="col-sm-2 col-form-label">Sort by</label>
+                            <label class="col-sm-2 col-form-label">District/Town</label>
                             <div class="col-sm-4">
-                                <select id="product-order-by" class="form-select" aria-label="Default select example">
-                                    @* @foreach (var item in Model.OrderBys)
+                                <select id="district-town" type="text" class="form-select" aria-label="Default select example">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4" style="justify-content: space-between">
+                            <label for="inputText" class="col-sm-1 col-form-label">Email</label>
+                            <div class="col-sm-4">
+                                <input id="Email" type="text" class="form-control" placeholder="Enter customer email...">
+                            </div>
+
+                            <label class="col-sm-2 col-form-label">Ward/Commune</label>
+                            <div class="col-sm-4">
+                                <select id="ward-commune" type="text" class="form-select" aria-label="Default select example">
+                                </select>
+                            </div>
+                        </div>
+
+                        <input hidden name="cityprovince" type="text" id="cityprovince" />
+                        <input hidden name="districttown" type="text" id="districttown" />
+                        <input hidden name="wardcommune" type="text" id="wardcommune" />
+
+                        <div class="row mb-4" style="justify-content: space-between">
+                            <label for="inputText" class="col-sm-1 col-form-label">Status</label>
+                            <div class="col-sm-4">
+                                <select id="order-status" class="form-select" aria-label="Default select example">
+                                    <option value=@null></option>
+                                    @foreach (var item in Model.Status)
                                     {
+                                        if (item.Key == 1) continue;
                                         <option value="@item.Key">@item.Value</option>
-                                    } *@
+                                    }
+
+                                </select>
+                            </div>
+
+                            <label class="col-sm-2 col-form-label">Order by</label>
+                            <div class="col-sm-4">
+                                <select id="order-by" class="form-select" aria-label="Default select example">
+                                    @foreach (var item in Model.OrderBy)
+                                    {
+                                        if (item.Key == 4) continue;
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
 
                                 </select>
                             </div>
                         </div>
+
                         <!-- Table with stripped rows -->
                         <table style="text-align: center" class="table datatable table-hover table-bordered">
                             <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
-                                    <th>Discount Price</th>
-                                    <th>Featured</th>
-                                    <th>Rating</th>
-                                    <th>Actions</th>
+                                <tr style="vertical-align: middle">
+                                    <th>Customer Name</th>
+                                    <th>Contact</th>
+                                    <th>Address</th>
+                                    <th>Order date</th>
+                                    <th>Total amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="table-content">
+                            <tbody id="table-content" style="vertical-align: middle">
                                 @*partial view*@
                             </tbody>
                         </table>
@@ -100,5 +185,7 @@
 
 </main><!-- End #main -->
 @section Scripts {
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="~/NiceAdmin/js/order-list.js"></script>
     <script src="~/NiceAdmin/js/result.js"></script>
 }

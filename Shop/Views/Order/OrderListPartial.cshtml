@@ -1,0 +1,44 @@
+﻿﻿@using Application.Orders;
+@using Application;
+@using Domain.Enums
+@model GenericData<OrderViewModel>
+
+@foreach (var item in Model.Data)
+{
+    <tr data-count="@Model.Count" class="total-count">
+        <td>@item.CustomerName</td>
+        <td>
+            <a href="tel:@item.PhoneNumber">@item.PhoneNumber</a>
+            <a href="mailto:@item.Email">@item.Email</a>
+        </td>
+        <td><a target="_blank" href="https://www.google.com/maps/search/@item.Address">@item.Address</a></td>
+        <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
+        <td>@item.TotalAmount.ToString("C")</td>
+        <td>
+            @switch (item.Status)
+            {
+                case EntityStatus.Pending:
+                    @* <span data-bs-toggle="tooltip" data-bs-placement="top" title="Pending" class="badge bg-primary">
+                        <i class="bi bi-clock"></i>
+                    </span> *@
+                    <div data-bs-toggle="tooltip" data-bs-placement="top" title="Pending" class="spinner-border text-primary" role="status"></div>
+                    break;
+                case EntityStatus.Completed:
+                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="Completed" class="badge bg-success">
+                        <i class="bi bi-check-lg"></i>
+                    </span>
+                    break;
+                case EntityStatus.Denied:
+                case EntityStatus.Cancelled:
+                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="@item.Status.ToString()" class="badge bg-danger">
+                        <i class="bi bi-x-lg"></i>
+                    </span>
+                    break;
+            }
+        </td>
+        <td>
+            <a href="@Url.Action("Detail", "Order", new {id = item.OrderId})" class="btn btn-sm btn-primary mb-1">Order detail</a>
+            <a href="@Url.Action("Update", "Order", new {id = item.OrderId})" class="btn btn-sm btn-danger">Update status</a>
+        </td>
+    </tr>
+}

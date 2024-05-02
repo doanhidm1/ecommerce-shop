@@ -49,11 +49,7 @@ namespace Application.Brands
 
         public async Task<BrandViewModel> GetBrandDetail(Guid id)
         {
-            var brand = await _brandRepository.FindById(id);
-            if (brand == null)
-            {
-                throw new Exception("Brand not found!");
-            }
+            var brand = await _brandRepository.FindById(id) ?? throw new Exception("Brand not found!");
             var productCount = await _productRepository.GetAll().CountAsync(p => p.BrandId == id);
             var brandViewModel = new BrandViewModel
             {
@@ -79,11 +75,7 @@ namespace Application.Brands
 
         public async Task UpdateBrand(BrandUpdateViewModel model)
         {
-            var brand = await _brandRepository.FindById(model.Id);
-            if (brand == null)
-            {
-                throw new Exception("Brand not found!");
-            }
+            var brand = await _brandRepository.FindById(model.Id) ?? throw new Exception("Brand not found!");
             brand.Name = model.Name;
             await _brandRepository.Update(brand);
             await _unitOfWork.SaveChangesAsync();
@@ -91,11 +83,7 @@ namespace Application.Brands
 
         public async Task DeleteBrand(Guid id)
         {
-            var brand = await _brandRepository.FindById(id);
-            if (brand == null)
-            {
-                throw new Exception("Brand not found!");
-            }
+            var brand = await _brandRepository.FindById(id) ?? throw new Exception("Brand not found!");
             var products = await _productRepository.GetAll().Where(p => p.BrandId == id).ToListAsync();
             using var transaction = await _unitOfWork.BeginTransactionAsync();
             try
