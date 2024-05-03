@@ -10,5 +10,7 @@ namespace Application.Orders
         public EntityStatus Status { get; set; }
         public DateTime OrderDate { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        public string CustomerName { get; set; }
+        public Guid OrderId { get; set; }
     }
 }

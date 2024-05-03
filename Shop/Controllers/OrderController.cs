@@ -1,9 +1,11 @@
 ﻿using Application;
+using Application.Categories;
 using Application.Helper;
 using Application.Orders;
 using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Shop.Controllers
 {
@@ -33,14 +35,39 @@ namespace Shop.Controllers
             return PartialView(result);
         }
 
-        public IActionResult Detail(Guid orderId)
+        public async Task<IActionResult> Detail(Guid id)
         {
-            return View();
+            var reult = await _orderService.GetOrderDetail(id);
+            return View(reult);
         }
 
-        public IActionResult Update(OrderUpdateViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Update(OrderUpdateViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Update order status data invalided!"));
+                return RedirectToAction("Update");
+            }
+            await _orderService.UpdateOrder(model);
+            TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(200, "Order status updated successfully!"));
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var order = await _orderService.GetOrderDetail(id);
+            if (order == null)
+            {
+                TempData["response"] = JsonConvert.SerializeObject(new ResponseResult(400, "Order not found!"));
+                return RedirectToAction("Index");
+            }
+            var model = new OrderUpdateViewModel
+            {
+                OrderId = order.OrderId,
+                Status = order.Status,
+            };
+            return View(model);
         }
     }
 }

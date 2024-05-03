@@ -1,5 +1,6 @@
 ﻿﻿@using Application;
 @using Application.Orders
+@using Domain.Enums
 @using Newtonsoft.Json;
 @model OrderUpdateViewModel
 @{
@@ -17,6 +18,33 @@
     <p hidden id="message">@message</p>
     <p hidden id="status">@status</p>
     <section class="section">
+        <div class="row col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update order status</h5>
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3" method="post" action="/Order/Update">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="OrderId" type="hidden">
+                        <div>
+                            <label asp-for="Status" class="form-label">Status *</label>
+                            <select asp-for="Status" type="text" class="form-select">
+                                <option value="@EntityStatus.Pending">Pending</option>
+                                <option value="@EntityStatus.Completed">Completed</option>
+                                <option value="@EntityStatus.Cancelled">Cancelled</option>
+                                <option value="@EntityStatus.Denied">Denied</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form><!-- End Multi Columns Form -->
+                </div>
+            </div>
+        </div>
     </section>
 
 </main><!-- End #main -->

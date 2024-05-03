@@ -30,6 +30,8 @@ namespace Application.Orders
             var allOrderDetails = _orderDetailRepository.GetAll();
             var result = new OrderDetailViewModel
             {
+                OrderId = order.Id,
+                CustomerName = order.CustomerName,
                 OrderDate = order.CreatedDate,
                 PaymentMethod = order.PaymentMethod,
                 Status = order.Status,
