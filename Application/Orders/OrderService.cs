@@ -9,6 +9,7 @@ namespace Application.Orders
         Task<GenericData<OrderViewModel>> GetOrders(OrderPage model);
         Task<OrderDetailViewModel> GetOrderDetail(Guid orderId);
         Task UpdateOrder(OrderUpdateViewModel model);
+        Task<bool> IsExsit(Guid orderId);
     }
 
     public class OrderService : IOrderService
@@ -86,10 +87,10 @@ namespace Application.Orders
                     result = result.OrderBy(x => x.CustomerName);
                     break;
                 case SortEnum.Date:
-                    result = result.OrderBy(x => x.OrderDate);
+                    result = result.OrderByDescending(x => x.OrderDate);
                     break;
                 case SortEnum.Price:
-                    result = result.OrderBy(x => x.TotalAmount);
+                    result = result.OrderByDescending(x => x.TotalAmount);
                     break;
                 default:
                     break;
@@ -115,6 +116,12 @@ namespace Application.Orders
             data.Count = x.Count;
             data.Data = x;
             return data;
+        }
+
+        public async Task<bool> IsExsit(Guid orderId)
+        {
+            var order = await _orderRepository.FindById(orderId);
+            return order != null;
         }
 
         public async Task UpdateOrder(OrderUpdateViewModel model)

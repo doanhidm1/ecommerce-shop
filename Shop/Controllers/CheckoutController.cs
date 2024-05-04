@@ -1,6 +1,7 @@
 ﻿using Application;
 using Application.Checkout;
 using Application.Helper;
+using Application.Payment;
 using Application.Products;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,17 @@ namespace Shop.Controllers
     {
         private readonly IBillService _billService;
         private readonly IProductService _productService;
-        public CheckoutController(IBillService billService, IProductService productService)
+        private readonly IPayment _paymentService;
+        private const decimal RATE = 25400;
+
+        public CheckoutController(
+            IBillService billService,
+            IProductService productService,
+            IPayment paymentService)
         {
             _billService = billService;
             _productService = productService;
+            _paymentService = paymentService;
         }
 
         public IActionResult Index(int PaymentMethod)
@@ -28,7 +36,6 @@ namespace Shop.Controllers
             return View(model);
         }
 
-        // check item quantity before place order
         private async Task<bool> CheckQuantity()
         {
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
@@ -43,6 +50,20 @@ namespace Shop.Controllers
                 }
             }
             return true;
+        }
+
+        public IActionResult PaymentResult([FromQuery] MomoRedirectVM model)
+        {
+            Console.WriteLine("redirect data from momo:", JsonConvert.SerializeObject(model));
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReceiveIpn([FromBody] MomoIpnVM ipnData)
+        {
+            Console.WriteLine("ipn data from momo:", JsonConvert.SerializeObject(ipnData));
+            await _paymentService.PostPaymentProcess(ipnData);
+            return NoContent();
         }
 
         [ValidateAntiForgeryToken]
@@ -62,7 +83,7 @@ namespace Shop.Controllers
                 TempData["checkout"] = JsonConvert.SerializeObject(response);
                 return RedirectToAction("Index");
             }
-            
+
             var cart = HttpContext.Session.GetT<CartItemViewModel>(ShopConstants.Cart);
             if (cart == null)
             {
@@ -70,6 +91,7 @@ namespace Shop.Controllers
             }
             var billModel = new BillCreateViewModel
             {
+                Id = Guid.NewGuid(),
                 CustomerName = model.CustomerName,
                 CityProvince = model.CityProvince,
                 DistrictTown = model.DistrictTown,
@@ -81,6 +103,7 @@ namespace Shop.Controllers
                 PaymentMethod = model.PaymentMethod,
                 BillDetails = cart.Select(s => new BillDetailCreateViewModel
                 {
+                    Id = Guid.NewGuid(),
                     Price = s.Price,
                     ProductName = s.ProductName,
                     Quantity = s.Quantity,
@@ -93,10 +116,38 @@ namespace Shop.Controllers
                 {
                     await _productService.UpdateQuantity(item.ProductId, item.Quantity);
                 }
-                var response = new ResponseResult(200, "Place order success");
-                HttpContext.Session.Remove(ShopConstants.Cart);
-                TempData["checkout"] = JsonConvert.SerializeObject(response);
-                return RedirectToAction("Index");
+                switch (model.PaymentMethod)
+                {
+                    case PaymentMethod.ONLINE_MOMO:
+                        var data = new CreateMomoOrderVM
+                        {
+                            OrderId = billModel.Id,
+                            Amount = (long)(billModel.BillDetails.Sum(s => s.Quantity * s.Price * RATE)),
+                            items = billModel.BillDetails.Select(s => new OrderItems
+                            {
+                                id = s.Id.ToString(),
+                                name = s.ProductName,
+                                quantity = s.Quantity,
+                                purchaseAmount = s.Price * RATE,
+                                totalAmount = (long)(s.Price * s.Quantity * RATE)
+                            }).ToList(),
+                            userInfo = new UserInfo
+                            {
+                                name = model.CustomerName,
+                                phoneNumber = model.PhoneNumber,
+                                email = model.Email
+                            }
+                        };
+                        var payUrl = await _paymentService.CreateOrder(data);
+                        return Redirect(payUrl);
+                    case PaymentMethod.PAY_WHEN_RECEIVE:
+                        var response = new ResponseResult(200, "Place order success");
+                        HttpContext.Session.Remove(ShopConstants.Cart);
+                        TempData["checkout"] = JsonConvert.SerializeObject(response);
+                        return RedirectToAction("Index");
+                    default:
+                        throw new Exception("Invalid payment method");
+                }
             }
             catch (Exception)
             {

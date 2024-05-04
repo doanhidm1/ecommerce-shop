@@ -37,7 +37,7 @@ namespace Application.Checkout
                     Note = model.Note,
                     TotalAmount = model.BillDetails.Sum(s => s.Quantity * s.Price),
                     PaymentMethod = model.PaymentMethod,
-                    Id = Guid.NewGuid(),
+                    Id = model.Id,
                     CreatedDate = DateTime.Now,
                     Status = Domain.Enums.EntityStatus.Pending,
 
@@ -61,7 +61,7 @@ namespace Application.Checkout
         {
             var billDetail = new OrderDetail
             {
-                Id = Guid.NewGuid(),
+                Id = item.Id,
                 BillId = bill.Id,
                 CreatedDate = bill.CreatedDate,
                 Status = Domain.Enums.EntityStatus.Active,

@@ -1,0 +1,40 @@
+﻿@using Application.Payment;
+@model MomoRedirectVM
+
+@{
+    ViewData["Title"] = "PaymentResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/molla/assets/css/skins/skin-demo-4.css">
+}
+
+<title>Payment Result</title>
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('/molla/assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Payment Result</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <div class="ml-5 mr-5" style="background-color: white; text-align:center; align-content: center; height: 500px; border-radius: 8px">
+        <div>
+            <div>
+                @if (Model.ResultCode == 0)
+                {
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 10rem;"></i>
+                    <h2>Payment Successful</h2>
+                    @Html.ActionLink("Buy more products", "Index", "Product", new { area = "" }, new { @class = "btn btn-primary mt-3 rounded" })
+                }
+                else
+                {
+                    <i class="bi bi-x-circle-fill text-danger" style="font-size: 10rem;"></i>
+                    <h2>Payment Unsuccessful</h2>
+                    <h4 class="text-danger">@Model.Message</h4>
+                    @Html.ActionLink("Try again", "Index", "Checkout", new { area = "" }, new { @class = "btn btn-primary mt-3 rounded" })
+                }
+            </div>
+        </div>
+    </div>
+</main><!-- End .main -->

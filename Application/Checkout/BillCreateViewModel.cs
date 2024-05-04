@@ -4,6 +4,7 @@ namespace Application.Checkout
 {
     public class BillCreateViewModel
     {
+        public Guid Id { get; set; }
         public string CustomerName { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
@@ -18,6 +19,7 @@ namespace Application.Checkout
     }
     public class BillDetailCreateViewModel
     {
+        public Guid Id { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }

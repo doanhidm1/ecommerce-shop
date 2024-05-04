@@ -2,6 +2,7 @@
 using Application.Categories;
 using Application.Checkout;
 using Application.Orders;
+using Application.Payment;
 using Application.Products;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ namespace Application
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddScoped<IPayment, MomoService>();
         }
     }
 }

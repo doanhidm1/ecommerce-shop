@@ -2,8 +2,7 @@
 {
     public enum PaymentMethod
     {
-        BankTranfer = 1,
-        DirectPay = 2,
-        PayPal = 3
+        PAY_WHEN_RECEIVE = 1,
+        ONLINE_MOMO = 2,
     }
 }
